@@ -1,0 +1,25 @@
+[project]
+name = "anonymizer"
+version = "0.1.0"
+authors = [
+    { name="Jhonatan Rian", email="jhonatanrian0543@outlook.com" },
+]
+description = "A tool to censor sensitive data"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/pypa/sampleproject"
+
+[project.scripts]
+anonymizer = "anonymizer:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
