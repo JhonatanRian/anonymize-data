@@ -23,3 +23,8 @@ anonymizer = "anonymizer:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "coverage>=7.6.2",
+]
