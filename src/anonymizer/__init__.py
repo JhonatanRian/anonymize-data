@@ -1,6 +1,7 @@
-from .anonymizer import Anonymizer, MaskString
+from .anonymizer import MaskString, MaskDict, MaskList
 
 __all__ = [
-    'Anonymizer',
-    'MaskString'
+    'MaskString',
+    'MaskDict',
+    'MaskList'
 ]

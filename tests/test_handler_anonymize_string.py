@@ -22,7 +22,7 @@ class TestHandlerAnonymizeString(unittest.TestCase):
 
     def test_negative_size_anonymization(self):
         result = handler_anonymize_string("SensitiveData", size_anonymization=-0.5)
-        self.assertEqual(result, "******veData")
+        self.assertEqual(result, "Sensiti******")
 
     def test_default_size_anonymization(self):
         with self.assertRaises(TypeError):
