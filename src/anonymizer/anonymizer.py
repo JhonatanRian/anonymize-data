@@ -67,6 +67,9 @@ class MaskString(MaskBase):
     def __str__(self) -> str:
         return self.anonymize()
 
+    def __repr__(self):
+        return f"<MaskString {self}>"
+
     def _anonymize(self, value: str) -> str:
         if not self.__anonymize_string:
             return value
@@ -80,7 +83,7 @@ class MaskString(MaskBase):
 
         size_anonymization = round(size_anonymization, 1)
 
-        if not (0 <= size_anonymization <= 1):
+        if not (0 < abs(size_anonymization) <= 1):
             raise ValueError("The 'size_anonymization' field must be between 0 and 1.")
 
 
