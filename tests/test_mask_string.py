@@ -1,6 +1,8 @@
 import unittest
 from anonymizer import MaskString
 from anonymizer.string_mask import MaskDispatch
+from tests.conftest import fake
+
 
 class TestMaskString(unittest.TestCase):
 
@@ -42,6 +44,31 @@ class TestMaskString(unittest.TestCase):
         mask_string = MaskString(self.valid_string, string_mask=self.mask_dispatch)
         result = mask_string.anonymize()
         self.assertEqual(result, '*********Data')
+
+    def test_magic_method_repr(self):
+        mask_string = MaskString(self.valid_string, string_mask=self.mask_dispatch)
+        mask_string.anonymize()
+        self.assertEqual(repr(mask_string), '<MaskString ******>')
+
+    def test_enter_type_mask_cpf_valid(self):
+        cpf = fake.cpf()
+        cpf_clean = cpf.replace('.', '').replace('-', '')
+
+        mask_string = MaskString(cpf, type_mask='cpf')
+        self.assertEqual(mask_string.anonymize(), f"***.{cpf_clean[3:6]}.***-**")
+
+        mask_string = MaskString(cpf_clean, type_mask='cpf')
+        self.assertEqual(mask_string.anonymize(), f"*******{cpf_clean[7:]}")
+
+    def test_enter_type_mask_cpf_invalid(self):
+        cpf_invalid = "123.456.789-20"
+        cpf_invalid_clean = "12345678920"
+
+        mask_string = MaskString(cpf_invalid, type_mask='cpf')
+        self.assertEqual(mask_string.anonymize(), cpf_invalid)
+
+        mask_string = MaskString(cpf_invalid_clean, type_mask='cpf')
+        self.assertEqual(mask_string.anonymize(), cpf_invalid_clean)
 
 
 if __name__ == '__main__':

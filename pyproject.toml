@@ -7,7 +7,10 @@ authors = [
 description = "A tool to censor sensitive data"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "faker>=30.4.0",
+    "validate-docbr>=1.10.0",
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -17,14 +20,11 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/pypa/sampleproject"
 
-[project.scripts]
-anonymizer = "anonymizer:main"
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.uv]
 dev-dependencies = [
-    "coverage>=7.6.2",
+    "coverage>=7.6.3",
 ]

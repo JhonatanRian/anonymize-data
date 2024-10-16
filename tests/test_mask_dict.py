@@ -3,6 +3,8 @@ import unittest
 
 from anonymizer.anonymizer import MaskDict
 from anonymizer.string_mask import MaskDispatch
+from tests.conftest import fake
+from tests.payloads import COMPLEX_DICT
 
 
 class TestMaskDict(unittest.TestCase):
@@ -18,6 +20,7 @@ class TestMaskDict(unittest.TestCase):
                 "inner_key2": "SensitiveData2"
             }
         }
+        self.valid_complex_dict = COMPLEX_DICT
         self.mask_dispatch = MaskDispatch()
         self.mask_dict = MaskDict(self.valid_dict, string_mask=self.mask_dispatch)
 
@@ -27,7 +30,7 @@ class TestMaskDict(unittest.TestCase):
 
     def test_create_mask_dict_invalid_type(self):
         with self.assertRaises(ValueError) as context:
-            MaskDict(123, string_mask=self.mask_dispatch)  # Tipo inválido
+            MaskDict(123, string_mask=self.mask_dispatch)
         self.assertEqual(str(context.exception), 'Value 123 is not valid')
 
     def test_anonymize(self):
@@ -86,7 +89,8 @@ class TestMaskDict(unittest.TestCase):
             "key2": "*********Data2"
         }
         self.mask_dict.anonymize()
-        self.assertEqual(self.mask_dict.dict(), expected_result)
+        self.assertEqual(dict(self.mask_dict), expected_result)
+        self.assertEqual(self.mask_dict.__dict__, expected_result)
 
     def test_getitem(self):
         self.mask_dict.anonymize()
@@ -97,8 +101,8 @@ class TestMaskDict(unittest.TestCase):
         self.assertEqual(len(self.mask_dict), 2)
 
     def test_iter(self):
-        keys = [key for key in self.mask_dict]
-        self.assertEqual(keys, ["key1", "key2"])
+        keys = [key_value for key_value in self.mask_dict]
+        self.assertEqual(keys, [('key1', 'SensitiveData1'), ('key2', 'SensitiveData2')])
 
     def test_str(self):
         expected_str = str({
@@ -107,6 +111,49 @@ class TestMaskDict(unittest.TestCase):
         })
         self.mask_dict.anonymize()
         self.assertEqual(str(self.mask_dict), expected_str)
+
+    def test_select_keys_for_anonymize(self):
+        expected_dict = {
+            "outer_key": {
+                "inner_key1": [
+                    "SensitiveData1",
+                    {
+                        "outer_key2": {
+                            "inner_key1x": "SensitiveData1",
+                            "inner_key2": "*********Data2"
+                        }
+                    },
+                    {
+                        "outer_key3": "*********Data1"
+                    },
+                    {
+                        "outer_key2": {
+                            "inner_key1x": "SensitiveData1",
+                            "inner_key2": "*********Data2"
+                        }
+                    }
+                ],
+                "inner_key_data": ["*******ata1", "*******ata2", "*******ata3"],
+                "inner_key_data2": ["inner1_data1", "inner2_data2", "inner3_data3"]
+            },
+            "outer_key2": {
+                "inner_key1": "SensitiveData1",
+            },
+            "outer_key3": "*********Data3"
+        }
+        mask_dict = MaskDict(self.valid_complex_dict, selected_keys=['inner_key2', 'outer_key3', 'inner_key_data'])
+        self.assertEqual(mask_dict.anonymize(), expected_dict)
+
+    def test_enter_cpf_valid_in_selected_types(self):
+        cpf = fake.cpf()
+        cpf_anonymized = f"***.{cpf[4:7]}.***-**"
+
+        data = {"users": [{"cpf": cpf}], "cpfs": [cpf]}
+        expected_data = {'users': [{'cpf': cpf_anonymized}], 'cpfs': [cpf_anonymized]}
+
+        mask_dict = MaskDict(data , key_with_type_mask=True)
+        mask_dict.anonymize()
+        self.assertEqual(mask_dict.anonymize(), expected_data)
 
 
 if __name__ == '__main__':

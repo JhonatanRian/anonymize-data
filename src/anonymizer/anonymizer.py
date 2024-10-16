@@ -1,18 +1,19 @@
 from abc import ABC, abstractmethod
+from copy import deepcopy
 from typing import Any, Optional
 
 from anonymizer.exceptions import KeyMaskError
 from anonymizer.string_mask import MaskDispatch
 
 
-def dispatch_value_mask(value, save_mask, **extra):
+def dispatch_value_mask(value, **extra):
     match type(value).__name__:
         case 'list':
-            return MaskList(value, save_mask=save_mask, **extra).anonymize()
+            return MaskList(value, **extra).anonymize()
         case 'dict':
-            return MaskDict(value, save_mask=save_mask, **extra).anonymize()
+            return MaskDict(value, **extra).anonymize()
         case 'str':
-            return MaskString(value, save_mask=save_mask, **extra).anonymize()
+            return MaskString(value, **extra).anonymize()
         case _:
             return value
 
@@ -20,13 +21,12 @@ def dispatch_value_mask(value, save_mask, **extra):
 class MaskBase(ABC):
     allowed_type: type
 
-    def __init__(self, value: Any, save_mask: bool) -> None:
+    def __init__(self, value: Any) -> None:
         if not self.check_value(value):
             raise ValueError(f'Value {value} is not valid')
 
         self._value = value
         self._value_anonymized = None
-        self._save_mask = save_mask
 
     def check_value(self, value: Any) -> bool:
         return isinstance(value, self.allowed_type)
@@ -35,7 +35,7 @@ class MaskBase(ABC):
         return self._value
 
     def anonymize(self):
-        if self._value_anonymized is None and self._save_mask:
+        if self._value_anonymized is None:
             self._value_anonymized = self._anonymize(self._value)
         return self._value_anonymized or self._anonymize(self._value)
 
@@ -49,9 +49,9 @@ class MaskString(MaskBase):
     _type_mask_default: str = "string"
 
     def __init__(self, value: str, type_mask: Optional[str] = None,
-                 string_mask: Optional[MaskDispatch] = None, save_mask: bool = True,
+                 string_mask: Optional[MaskDispatch] = None,
                  anonymize_string: bool = True, **kwargs) -> None:
-        super().__init__(value, save_mask)
+        super().__init__(value)
 
         self._type_mask = type_mask or self._type_mask_default
         self._string_mask = string_mask or MaskDispatch()
@@ -68,7 +68,7 @@ class MaskString(MaskBase):
         return self.anonymize()
 
     def __repr__(self):
-        return f"<MaskString {self}>"
+        return f"<MaskString {str(self)[:6]}>"
 
     def _anonymize(self, value: str) -> str:
         if not self.__anonymize_string:
@@ -90,17 +90,18 @@ class MaskString(MaskBase):
 class MaskList(MaskBase):
     allowed_type = list
 
-    def __init__(self, value: list, save_mask: bool = True, **kwargs) -> None:
-        super().__init__(value, save_mask)
+    def __init__(self, value: list, **kwargs) -> None:
+        super().__init__(value)
 
         self._extra = kwargs
 
     def _anonymize(self, value: list) -> list:
         return [dispatch_value_mask(
-            item, save_mask=False, **self._extra
+            item, **self._extra
         ) for item in value]
 
-    def list(self) -> list:
+    @property
+    def __list__(self) -> list:
         return self._value_anonymized or self._value
 
     def __getitem__(self, index):
@@ -121,38 +122,49 @@ class MaskList(MaskBase):
         if isinstance(other, list):
             return value_compare == other
         elif isinstance(other, MaskList):
-            return value_compare == other.list()
+            return value_compare == list(other)
         return False
 
 
 class MaskDict(MaskBase):
     allowed_type = dict
 
-    def __init__(self, value: dict, save_mask: bool = True, key_with_type_mask: bool = False, **kwargs) -> None:
-        super().__init__(value, save_mask)
+    def __init__(self, value: dict, key_with_type_mask: bool = False,
+                 selected_keys: Optional[list[str]] = None,  **kwargs) -> None:
+        super().__init__(value)
         self.__key_with_type_mask = key_with_type_mask
-
-        if key_with_type_mask and kwargs.get('type_mask', False):
-            raise KeyMaskError('Only one of these parameters can be true, not both. "key_with_type_mask" | "type_mask"')
+        self.__selected_keys = selected_keys or []
 
         self._extra = kwargs
+        self._extra['selected_keys'] = self.__selected_keys
+        self._extra['key_with_type_mask'] = self.__key_with_type_mask
+
+        if len(self.__selected_keys) > 0:
+            self._extra['anonymize_string'] = True
+
+        if self.__key_with_type_mask:
+            self._extra.pop('type_mask', None)
 
     def _anonymize(self, value: dict) -> dict:
         dict_anonymized = {}
-        for key, value in value.items():
+        for k, v in value.items():
+            extra_data = deepcopy(self._extra)
+
+            if len(self.__selected_keys) > 0 and k not in self.__selected_keys:
+                extra_data['anonymize_string'] = False
+
             if self.__key_with_type_mask:
-                value_anonymized = dispatch_value_mask(
-                    value, save_mask=False, type_mask=key, **self._extra
-                )
-            else:
-                value_anonymized = dispatch_value_mask(
-                    value, save_mask=False, **self._extra
-                )
-            dict_anonymized[key] = value_anonymized
+                extra_data['type_mask'] = k
+
+            value_anonymized = dispatch_value_mask(
+                v, **extra_data
+            )
+            dict_anonymized[k] = value_anonymized
         return dict_anonymized
 
-    def dict(self) -> dict:
-        return self._value_anonymized
+    @property
+    def __dict__(self) -> dict:
+        return self._value_anonymized or self._value
 
     def __getitem__(self, key):
         value_dict = self._value_anonymized or self._value
@@ -162,7 +174,9 @@ class MaskDict(MaskBase):
         return len(self._value_anonymized or self._value)
 
     def __iter__(self):
-        return iter(self._value_anonymized or self._value)
+        if self._value_anonymized:
+            return iter(self._value_anonymized.items())
+        return iter(self._value.items())
 
     def __str__(self) -> str:
         return str(self._value_anonymized or self._value)

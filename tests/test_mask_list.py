@@ -18,23 +18,24 @@ class TestMaskList(unittest.TestCase):
 
     def test_create_mask_list_no_anonymized(self):
         mask_list = MaskList(self.valid_list, string_mask=self.mask_dispatch, anonymize_string=False)
-        self.assertEqual(mask_list.list(), self.valid_list)
+        self.assertEqual(list(mask_list), self.valid_list)
+        self.assertEqual(mask_list.__list__, self.valid_list)
 
     def test_create_mask_list_invalid_type(self):
         with self.assertRaises(ValueError) as context:
-            MaskList(123, string_mask=self.mask_dispatch)  # Tipo inválido
+            MaskList(123, string_mask=self.mask_dispatch)
         self.assertEqual(str(context.exception), 'Value 123 is not valid')
 
     def test_anonymize(self):
         mask_list = MaskList(self.valid_list, string_mask=self.mask_dispatch)
         result = mask_list.anonymize()
-        expected_result = ["*********Data1", "*********Data2"]  # Espera que toda a string seja mascarada
+        expected_result = ["*********Data1", "*********Data2"]
         self.assertEqual(result, expected_result)
 
     def test_empty_list(self):
         mask_list = MaskList([], string_mask=self.mask_dispatch)
         result = mask_list.anonymize()
-        self.assertEqual(result, [])  # Espera uma lista vazia
+        self.assertEqual(result, [])
 
     def test_anonymize_with_extra_kwargs(self):
         mask_list = MaskList(self.valid_list, string_mask=self.mask_dispatch, size_anonymization=0.5)
@@ -51,12 +52,10 @@ class TestMaskList(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
     def test_getitem(self):
-        # Testa o acesso a elementos individuais
         self.assertEqual(self.mask_list[0], "SensitiveData1")
         self.assertEqual(self.mask_list[1], "SensitiveData2")
 
     def test_len(self):
-        # Testa o comprimento da lista
         self.assertEqual(len(self.mask_list), 2)
 
     def test_iter(self):

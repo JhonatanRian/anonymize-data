@@ -16,6 +16,10 @@ class TestMaskDispatch(unittest.TestCase):
         result = self.dispatch.mask('string', 'SensitiveData', size_anonymization=1.0)
         self.assertEqual(result, '*************')
 
+    def test_mask_with_invalid_handler(self):
+        result = self.dispatch.mask('invalid', 'SensitiveData')
+        self.assertEqual(result, 'SensitiveData')
+
 
 if __name__ == '__main__':
     unittest.main()
