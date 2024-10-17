@@ -122,6 +122,37 @@ class MaskString(MaskBase):
 
 
 class MaskList(MaskBase):
+    """
+    Class to anonymize strings.\n
+
+    Note:
+        The "size_anonymization" parameter will be passed to MaskString for each string contained in "value" as well as
+        the other parameters, keeping this in mind be aware that if you pass an invalid value a ValueError may occur
+        when calling the "anonymize" method.
+
+    Attributes:
+        value (str): The string to anonymize.
+        type_mask (Optional[str]): The type mask to anonymize. Default is "string".
+        string_mask (bool): If false the string will never be anonymized. default is True.
+        size_anonymization (float): The size of the anonymized string.
+
+    Examples:
+        >>> mask_list = MaskList(["Hello world", "Hello Python"])
+        >>> print(mask_list)
+        ["Hello world", "Hello Python"]
+        >>> mask_list.anonymize()
+        ['*******orld', '********thon']
+        >>> mask_list = MaskList(["Hello world", "Hello Python"], size_anonymization=0.5)  # anonymizing by half
+        >>> print(mask_list.anonymize())
+        ['***** world', '******Python']
+        >>> mask_list.view()  # View original list
+        ["Hello world", "Hello Python"]
+
+    Returns:
+        MaskList: A object MaskList.
+
+    """
+
     _allowed_type = list
 
     def __init__(self, value: List[T], **kwargs: Any) -> None:

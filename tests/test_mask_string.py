@@ -59,7 +59,7 @@ class TestMaskString(unittest.TestCase):
     def test_magic_method_repr(self):
         mask_string = MaskString(self.valid_string, string_mask=self.mask_dispatch)
         mask_string.anonymize()
-        self.assertEqual(repr(mask_string), "<MaskString ******>")
+        self.assertEqual(repr(mask_string), "<MaskString>")
 
     def test_enter_type_mask_cpf_valid(self):
         cpf = fake.cpf()
