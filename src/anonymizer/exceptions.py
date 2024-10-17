@@ -1,2 +1,0 @@
-class KeyMaskError(Exception):
-    pass

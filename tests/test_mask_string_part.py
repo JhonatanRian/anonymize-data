@@ -21,5 +21,5 @@ class TestMaskStringPart(unittest.TestCase):
         self.assertEqual(result, "SensitiveData")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

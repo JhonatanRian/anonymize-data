@@ -15,7 +15,7 @@ class AnonymizeCPFTestCase(TestCase):
 
     def test_list_cpf_valid(self):
         cpf = fake.cpf()
-        cpf_two = fake.cpf().replace('.', '').replace('-', '')
+        cpf_two = fake.cpf().replace(".", "").replace("-", "")
         cpfs = [cpf, cpf_two]
         cpfs_anonymized = [f"***.{cpf[4:7]}.***-**", f"*******{cpf_two[7:]}"]
 

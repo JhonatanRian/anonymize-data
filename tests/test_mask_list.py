@@ -8,7 +8,10 @@ class TestMaskList(unittest.TestCase):
 
     def setUp(self):
         self.valid_list = ["SensitiveData1", "SensitiveData2"]
-        self.valid_nested_list = [["SensitiveData1", "SensitiveData2"], ["MoreData1", "MoreData2"]]
+        self.valid_nested_list = [
+            ["SensitiveData1", "SensitiveData2"],
+            ["MoreData1", "MoreData2"],
+        ]
         self.mask_dispatch = MaskDispatch()
         self.mask_list = MaskList(self.valid_list, string_mask=self.mask_dispatch)
 
@@ -17,14 +20,16 @@ class TestMaskList(unittest.TestCase):
         self.assertEqual(mask_list.view(), self.valid_list)
 
     def test_create_mask_list_no_anonymized(self):
-        mask_list = MaskList(self.valid_list, string_mask=self.mask_dispatch, anonymize_string=False)
+        mask_list = MaskList(
+            self.valid_list, string_mask=self.mask_dispatch, anonymize_string=False
+        )
         self.assertEqual(list(mask_list), self.valid_list)
         self.assertEqual(mask_list.__list__, self.valid_list)
 
     def test_create_mask_list_invalid_type(self):
         with self.assertRaises(ValueError) as context:
             MaskList(123, string_mask=self.mask_dispatch)
-        self.assertEqual(str(context.exception), 'Value 123 is not valid')
+        self.assertEqual(str(context.exception), "Value 123 is not valid")
 
     def test_anonymize(self):
         mask_list = MaskList(self.valid_list, string_mask=self.mask_dispatch)
@@ -38,7 +43,9 @@ class TestMaskList(unittest.TestCase):
         self.assertEqual(result, [])
 
     def test_anonymize_with_extra_kwargs(self):
-        mask_list = MaskList(self.valid_list, string_mask=self.mask_dispatch, size_anonymization=0.5)
+        mask_list = MaskList(
+            self.valid_list, string_mask=self.mask_dispatch, size_anonymization=0.5
+        )
         result = mask_list.anonymize()
 
         expected_result = ["*******veData1", "*******veData2"]
@@ -48,7 +55,10 @@ class TestMaskList(unittest.TestCase):
         mask_list = MaskList(self.valid_nested_list, string_mask=self.mask_dispatch)
         result = mask_list.anonymize()
 
-        expected_result = [["*********Data1", "*********Data2"], ["******ta1", "******ta2"]]
+        expected_result = [
+            ["*********Data1", "*********Data2"],
+            ["******ta1", "******ta2"],
+        ]
         self.assertEqual(result, expected_result)
 
     def test_getitem(self):
@@ -78,20 +88,25 @@ class TestMaskList(unittest.TestCase):
         self.assertNotEqual(self.mask_list, different_list)
 
     def test_not_equal_with_different_masklist(self):
-        different_mask_list = MaskList(["DifferentData11", "DifferentData22"], string_mask=self.mask_dispatch)
+        different_mask_list = MaskList(
+            ["DifferentData11", "DifferentData22"], string_mask=self.mask_dispatch
+        )
         self.assertNotEqual(self.mask_list, different_mask_list)
 
     def test_equal_with_different_object(self):
         class Test:
             def __init__(self):
-                self.title = 'test'
+                self.title = "test"
+
         obj_test = Test()
 
-        different_mask_list = MaskList(["DifferentData11", obj_test], string_mask=self.mask_dispatch)
+        different_mask_list = MaskList(
+            ["DifferentData11", obj_test], string_mask=self.mask_dispatch
+        )
         different_mask_list.anonymize()
         self.assertNotEqual(["*********Data11", obj_test], different_mask_list)
         self.assertNotEqual(obj_test, different_mask_list)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

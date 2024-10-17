@@ -37,5 +37,6 @@ class TestHandlerAnonymizeString(unittest.TestCase):
         with self.assertRaises(TypeError):
             handler_anonymize_string("SensitiveData")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

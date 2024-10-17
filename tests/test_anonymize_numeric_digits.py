@@ -17,5 +17,6 @@ class TestAnonymizeNumericDigits(unittest.TestCase):
         result = anonymize_numeric_digits("abc123xyz")
         self.assertEqual(result, "abc***xyz")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

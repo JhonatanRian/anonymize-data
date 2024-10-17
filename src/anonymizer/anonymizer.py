@@ -2,17 +2,16 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import Any, Optional
 
-from anonymizer.exceptions import KeyMaskError
 from anonymizer.string_mask import MaskDispatch
 
 
 def dispatch_value_mask(value, **extra):
     match type(value).__name__:
-        case 'list':
+        case "list":
             return MaskList(value, **extra).anonymize()
-        case 'dict':
+        case "dict":
             return MaskDict(value, **extra).anonymize()
-        case 'str':
+        case "str":
             return MaskString(value, **extra).anonymize()
         case _:
             return value
@@ -23,7 +22,7 @@ class MaskBase(ABC):
 
     def __init__(self, value: Any) -> None:
         if not self.check_value(value):
-            raise ValueError(f'Value {value} is not valid')
+            raise ValueError(f"Value {value} is not valid")
 
         self._value = value
         self._value_anonymized = None
@@ -48,9 +47,14 @@ class MaskString(MaskBase):
     allowed_type = str
     _type_mask_default: str = "string"
 
-    def __init__(self, value: str, type_mask: Optional[str] = None,
-                 string_mask: Optional[MaskDispatch] = None,
-                 anonymize_string: bool = True, **kwargs) -> None:
+    def __init__(
+        self,
+        value: str,
+        type_mask: Optional[str] = None,
+        string_mask: Optional[MaskDispatch] = None,
+        anonymize_string: bool = True,
+        **kwargs,
+    ) -> None:
         super().__init__(value)
 
         self._type_mask = type_mask or self._type_mask_default
@@ -60,7 +64,7 @@ class MaskString(MaskBase):
         if self._type_mask == self._type_mask_default:
             size_anonymization = kwargs.get("size_anonymization", 0.7)
             self.validate_size_anonymization(size_anonymization)
-            kwargs['size_anonymization'] = size_anonymization
+            kwargs["size_anonymization"] = size_anonymization
 
         self._extra = kwargs
 
@@ -96,9 +100,7 @@ class MaskList(MaskBase):
         self._extra = kwargs
 
     def _anonymize(self, value: list) -> list:
-        return [dispatch_value_mask(
-            item, **self._extra
-        ) for item in value]
+        return [dispatch_value_mask(item, **self._extra) for item in value]
 
     @property
     def __list__(self) -> list:
@@ -129,21 +131,26 @@ class MaskList(MaskBase):
 class MaskDict(MaskBase):
     allowed_type = dict
 
-    def __init__(self, value: dict, key_with_type_mask: bool = False,
-                 selected_keys: Optional[list[str]] = None,  **kwargs) -> None:
+    def __init__(
+        self,
+        value: dict,
+        key_with_type_mask: bool = False,
+        selected_keys: Optional[list[str]] = None,
+        **kwargs,
+    ) -> None:
         super().__init__(value)
         self.__key_with_type_mask = key_with_type_mask
         self.__selected_keys = selected_keys or []
 
         self._extra = kwargs
-        self._extra['selected_keys'] = self.__selected_keys
-        self._extra['key_with_type_mask'] = self.__key_with_type_mask
+        self._extra["selected_keys"] = self.__selected_keys
+        self._extra["key_with_type_mask"] = self.__key_with_type_mask
 
         if len(self.__selected_keys) > 0:
-            self._extra['anonymize_string'] = True
+            self._extra["anonymize_string"] = True
 
         if self.__key_with_type_mask:
-            self._extra.pop('type_mask', None)
+            self._extra.pop("type_mask", None)
 
     def _anonymize(self, value: dict) -> dict:
         dict_anonymized = {}
@@ -151,14 +158,12 @@ class MaskDict(MaskBase):
             extra_data = deepcopy(self._extra)
 
             if len(self.__selected_keys) > 0 and k not in self.__selected_keys:
-                extra_data['anonymize_string'] = False
+                extra_data["anonymize_string"] = False
 
             if self.__key_with_type_mask:
-                extra_data['type_mask'] = k
+                extra_data["type_mask"] = k
 
-            value_anonymized = dispatch_value_mask(
-                v, **extra_data
-            )
+            value_anonymized = dispatch_value_mask(v, **extra_data)
             dict_anonymized[k] = value_anonymized
         return dict_anonymized
 
