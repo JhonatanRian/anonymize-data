@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from typing import Any, Optional
+from typing import Any, Optional, TypeVar, Dict, List, Union
 
 from anonymizer.string_mask import MaskDispatch
 
+T = TypeVar("T")
 
-def dispatch_value_mask(value, **extra):
+
+def dispatch_value_mask(value: Any, **extra: Any) -> Any:
     match type(value).__name__:
         case "list":
             return MaskList(value, **extra).anonymize()
@@ -18,22 +20,23 @@ def dispatch_value_mask(value, **extra):
 
 
 class MaskBase(ABC):
-    allowed_type: type
+    _allowed_type: type
 
-    def __init__(self, value: Any) -> None:
+    def __init__(self, value: T) -> None:
         if not self.check_value(value):
             raise ValueError(f"Value {value} is not valid")
 
-        self._value = value
-        self._value_anonymized = None
+        self._value: T = value
+        self._value_anonymized: Optional[Union[str, list, dict]] = None
 
     def check_value(self, value: Any) -> bool:
-        return isinstance(value, self.allowed_type)
+        return isinstance(value, self._allowed_type)
 
     def view(self) -> Any:
         return self._value
 
     def anonymize(self):
+        """Returns and persists the anonymized value"""
         if self._value_anonymized is None:
             self._value_anonymized = self._anonymize(self._value)
         return self._value_anonymized or self._anonymize(self._value)
@@ -44,7 +47,34 @@ class MaskBase(ABC):
 
 
 class MaskString(MaskBase):
-    allowed_type = str
+    """
+    Class to anonymize strings.
+
+    Attributes:
+        value (str): The string to anonymize.
+        type_mask (Optional[str]): The type mask to anonymize. Default is "string".
+        string_mask (bool): If false the string will never be anonymized. default is True.
+        size_anonymization (float): The size of the anonymized string.
+
+    Examples:
+        >>> string = MaskString("Hello world")
+        >>> print(string)
+        Hello world
+        >>> string.anonymize()
+        '*******ord'
+        >>> print(string)
+        *******ord
+        >>> string.view()  # View original string
+        Hello Word
+
+    Returns:
+        MaskString: A object MaskString.
+
+    Raises:
+        ValueError: The 'size_anonymization' field must be between 0 and 1.
+    """
+
+    _allowed_type = str
     _type_mask_default: str = "string"
 
     def __init__(
@@ -53,26 +83,26 @@ class MaskString(MaskBase):
         type_mask: Optional[str] = None,
         string_mask: Optional[MaskDispatch] = None,
         anonymize_string: bool = True,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         super().__init__(value)
 
-        self._type_mask = type_mask or self._type_mask_default
-        self._string_mask = string_mask or MaskDispatch()
-        self.__anonymize_string = anonymize_string
+        self._type_mask: str = type_mask or self._type_mask_default
+        self._string_mask: MaskDispatch = string_mask or MaskDispatch()
+        self.__anonymize_string: bool = anonymize_string
 
         if self._type_mask == self._type_mask_default:
             size_anonymization = kwargs.get("size_anonymization", 0.7)
-            self.validate_size_anonymization(size_anonymization)
+            self._validate_size_anonymization(size_anonymization)
             kwargs["size_anonymization"] = size_anonymization
 
-        self._extra = kwargs
+        self._extra: Dict[str, Any] = kwargs
 
     def __str__(self) -> str:
-        return self.anonymize()
+        return self._value_anonymized or self._value
 
     def __repr__(self):
-        return f"<MaskString {str(self)[:6]}>"
+        return f"<MaskString>"
 
     def _anonymize(self, value: str) -> str:
         if not self.__anonymize_string:
@@ -80,7 +110,7 @@ class MaskString(MaskBase):
         return self._string_mask.mask(self._type_mask, value, **self._extra)
 
     @staticmethod
-    def validate_size_anonymization(size_anonymization: float) -> None:
+    def _validate_size_anonymization(size_anonymization: float) -> None:
         """Validates the size_anonymization parameter."""
         if not isinstance(size_anonymization, float):
             raise ValueError("The 'size_anonymization' must be a float.")
@@ -92,12 +122,12 @@ class MaskString(MaskBase):
 
 
 class MaskList(MaskBase):
-    allowed_type = list
+    _allowed_type = list
 
-    def __init__(self, value: list, **kwargs) -> None:
+    def __init__(self, value: List[T], **kwargs: Any) -> None:
         super().__init__(value)
 
-        self._extra = kwargs
+        self._extra: Dict[str, Any] = kwargs
 
     def _anonymize(self, value: list) -> list:
         return [dispatch_value_mask(item, **self._extra) for item in value]
@@ -129,20 +159,20 @@ class MaskList(MaskBase):
 
 
 class MaskDict(MaskBase):
-    allowed_type = dict
+    _allowed_type = dict
 
     def __init__(
         self,
-        value: dict,
+        value: Dict[str, Any],
         key_with_type_mask: bool = False,
-        selected_keys: Optional[list[str]] = None,
-        **kwargs,
+        selected_keys: Optional[List[str]] = None,
+        **kwargs: Any,
     ) -> None:
         super().__init__(value)
-        self.__key_with_type_mask = key_with_type_mask
-        self.__selected_keys = selected_keys or []
+        self.__key_with_type_mask: bool = key_with_type_mask
+        self.__selected_keys: List[str] = selected_keys or []
 
-        self._extra = kwargs
+        self._extra: Dict[str, Any] = kwargs
         self._extra["selected_keys"] = self.__selected_keys
         self._extra["key_with_type_mask"] = self.__key_with_type_mask
 
