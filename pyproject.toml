@@ -2,7 +2,7 @@
 name = "anonymizer"
 version = "0.1.0"
 authors = [
-    { name="Jhonatan Rian", email="jhonatanrian0543@outlook.com" },
+    { name="Jhonatan Rian", email="jhonatanrian@zohomail.com" },
 ]
 description = "A tool to censor sensitive data"
 readme = "README.md"
