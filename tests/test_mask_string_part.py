@@ -3,7 +3,7 @@ import unittest
 from anonymizer.utils import mask_string_part
 
 
-class TestMaskStringPart(unittest.TestCase):
+class TestMaskStrPart(unittest.TestCase):
 
     def test_mask_part(self):
         result = mask_string_part("SensitiveData", 0, 8)

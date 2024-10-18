@@ -1,7 +1,7 @@
 from rich.console import Console
 from typer import Typer, Argument
 
-from .anonymizer import MaskString
+from .anonymizer import MaskStr
 
 console = Console()
 app = Typer()
@@ -18,7 +18,7 @@ def anonymize(
     """
     cli anonymization string
     """
-    string_mask = MaskString(
+    string_mask = MaskStr(
         value, type_mask, size_anonymization=size_anonymization
     ).anonymize()
     console.print(string_mask, style="#ccc010 bold")

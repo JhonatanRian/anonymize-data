@@ -14,7 +14,7 @@ def dispatch_value_mask(value: Any, **extra: Any) -> Any:
         case "dict":
             return MaskDict(value, **extra).anonymize()
         case "str":
-            return MaskString(value, **extra).anonymize()
+            return MaskStr(value, **extra).anonymize()
         case _:
             return value
 
@@ -46,7 +46,7 @@ class MaskBase(ABC):
         pass
 
 
-class MaskString(MaskBase):
+class MaskStr(MaskBase):
     """
     Class to anonymize strings.
 
@@ -56,8 +56,11 @@ class MaskString(MaskBase):
         string_mask (bool): If false the string will never be anonymized. default is True.
         size_anonymization (float): The size of the anonymized string.
 
+    Returns:
+        MaskStr: A object MaskStr.
+
     Examples:
-        >>> string = MaskString("Hello world")
+        >>> string = MaskStr("Hello world")
         >>> print(string)
         Hello world
         >>> string.anonymize()
@@ -67,11 +70,10 @@ class MaskString(MaskBase):
         >>> string.view()  # View original string
         Hello Word
 
-    Returns:
-        MaskString: A object MaskString.
-
     Raises:
         ValueError: The 'size_anonymization' field must be between 0 and 1.
+        ValueError: The 'size_anonymization' must be a float.
+        ValueError: Value {value} is not valid.
     """
 
     _allowed_type = str
@@ -102,7 +104,7 @@ class MaskString(MaskBase):
         return self._value_anonymized or self._value
 
     def __repr__(self):
-        return f"<MaskString>"
+        return f"<MaskStr>"
 
     def _anonymize(self, value: str) -> str:
         if not self.__anonymize_string:
@@ -123,18 +125,21 @@ class MaskString(MaskBase):
 
 class MaskList(MaskBase):
     """
-    Class to anonymize strings.\n
-
-    Note:
-        The "size_anonymization" parameter will be passed to MaskString for each string contained in "value" as well as
-        the other parameters, keeping this in mind be aware that if you pass an invalid value a ValueError may occur
-        when calling the "anonymize" method.
+    This class anonymizes data contained in lists. Just like `MaskDict`, it can be data of type `str`, `dict` or `list`.
 
     Attributes:
         value (str): The string to anonymize.
         type_mask (Optional[str]): The type mask to anonymize. Default is "string".
         string_mask (bool): If false the string will never be anonymized. default is True.
         size_anonymization (float): The size of the anonymized string.
+
+    Note:
+        The "size_anonymization" parameter will be passed to MaskStr for each string contained in "value" as well as
+        the other parameters, keeping this in mind be aware that if you pass an invalid value a ValueError may occur
+        when calling the "anonymize" method.
+
+    Returns:
+        MaskList: A object MaskList.
 
     Examples:
         >>> mask_list = MaskList(["Hello world", "Hello Python"])
@@ -148,9 +153,8 @@ class MaskList(MaskBase):
         >>> mask_list.view()  # View original list
         ["Hello world", "Hello Python"]
 
-    Returns:
-        MaskList: A object MaskList.
-
+    Raises:
+        ValueError: Value {value} is not valid.
     """
 
     _allowed_type = list
@@ -190,6 +194,44 @@ class MaskList(MaskBase):
 
 
 class MaskDict(MaskBase):
+    """
+    This class performs dictionary anonymization. For string values it will use the `MaskStr` class, for lists it
+    will use the `MaskList` class and for dictionaries it will use `MaskDict`. This allows mass masking to occur.
+    Knowing this, remember that parameters such as `size_anonymization` or `type_mask` are passed to the anonymizations
+    that occur in cascade.
+
+    You can also choose which keys should be anonymized, or choose to use dictionary keys as `type_mask` so that they
+    are dispatched to data type handlers.
+
+    Attributes:
+        value (str): The string to anonymize.
+        type_mask (Optional[str]): The type mask to anonymize. Default is "string".
+        size_anonymization (Optional[float]): The size of the anonymized string.
+        selected_keys (Optional[list[str]]): A list of selected keys that should be anonymized only.
+        key_with_type_mask (Optional[bool]): If True it passes the keys as key_mask to the value when being anonymized.
+
+    Returns:
+        MaskStr: A object MaskStr.
+
+    Examples:
+        >>> dictionary = MaskDict({"key": "value_common", "key2": "value_common2"})
+        >>> print(dictionary)
+        {"key": "value_common", "key2": "value_common2"}
+        >>> dictionary.anonymize()
+        '*******ord'
+        >>> print(dictionary)
+        {'key': '********mmon', 'key2': '*********mon2'}
+        >>> dictionary.view()  # View original string
+        {"key": "value_common", "key2": "value_common2"}
+
+    Raises:
+        ValueError: Value {value} is not valid.
+
+    Note:
+        You should pay attention to the order of preference of these parameters. You can pass them all but one will
+        always have more preference than the other, the order is: `size_anonymization` < `type_mask` < `selected_keys` < `key_with_type_mask`
+    """
+
     _allowed_type = dict
 
     def __init__(

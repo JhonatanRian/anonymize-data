@@ -1,3 +1,14 @@
-from .anonymizer import MaskString, MaskDict, MaskList
+"""
+The Anonymize library provides functionality to anonymize sensitive data in different formats, such as strings, lists,
+and dictionaries. This library is useful for developers who need to ensure data privacy in their applications.
 
-__all__ = ["MaskString", "MaskDict", "MaskList"]
+Classes:
+    MaskStr: Class for anonymizing string sensitive data
+    MaskList: Class for anonymizing list with sensitive data
+    MaskDict: Class for anonymizing dict with sensitive data
+
+"""
+
+from .anonymizer import MaskStr, MaskDict, MaskList
+
+__all__ = ["MaskStr", "MaskDict", "MaskList"]

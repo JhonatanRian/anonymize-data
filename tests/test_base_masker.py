@@ -1,11 +1,11 @@
 from unittest import TestCase
 
-from anonymizer import MaskString
+from anonymizer import MaskStr
 
 
 class TestMaskBase(TestCase):
 
-    class MaskBaseImplementation(MaskString):
+    class MaskBaseImplementation(MaskStr):
         allowed_type = str
 
         def _anonymize(self, value):

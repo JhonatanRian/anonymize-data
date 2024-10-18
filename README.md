@@ -12,8 +12,8 @@ Para instalar a biblioteca, você pode usar o seguinte comando:
 pip install anonymize
 ```
 ## Classes
-### MaskString
-A classe MaskString é usada para anonimizar strings.
+### MaskStr
+A classe MaskStr é usada para anonimizar strings.
 
 #### Parâmetros:
 - value: A string que será anonimizada.  
@@ -29,22 +29,22 @@ Exemplos de uso:
 
 A classe se comporta como se fosse uma string.
 ```python
->>> MaskString('Hello Word')
-<MaskString *******ord>
->>> print(f"string anonymized: {MaskString('Hello Word')}")
+>>> MaskStr('Hello Word')
+<MaskStr *******ord>
+>>> print(f"string anonymized: {MaskStr('Hello Word')}")
 string anonymized: *******ord
 ```
 
 Escolhendo quanto porcento quer anonimizar.
 ```python
->>> MaskString("Hello Word", size_anonymization=0.5)
-<MaskString ***** Word>
+>>> MaskStr("Hello Word", size_anonymization=0.5)
+<MaskStr ***** Word>
 ```
 
 Para anonimizar ao contrário basta passar um valor negativo para o `size_anonymization`.
 ```python
->>> MaskString("Hello Word", size_anonymization=-0.5)
-<MaskString Hello*****>
+>>> MaskStr("Hello Word", size_anonymization=-0.5)
+<MaskStr Hello*****>
 ```
 
 ### MaskList
