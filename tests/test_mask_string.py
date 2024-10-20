@@ -1,6 +1,6 @@
 import unittest
 from anonymizer import MaskStr
-from anonymizer.string_mask import MaskDispatch
+from anonymizer.mask_dispatch import MaskDispatch
 from tests.conftest import fake
 
 
@@ -62,6 +62,7 @@ class TestMaskStr(unittest.TestCase):
         self.assertEqual(repr(mask_string), "<MaskStr>")
 
     def test_enter_type_mask_cpf_valid(self):
+
         cpf = fake.cpf()
         cpf_clean = cpf.replace(".", "").replace("-", "")
 
@@ -69,7 +70,7 @@ class TestMaskStr(unittest.TestCase):
         self.assertEqual(mask_string.anonymize(), f"***.{cpf_clean[3:6]}.***-**")
 
         mask_string = MaskStr(cpf_clean, type_mask="cpf")
-        self.assertEqual(mask_string.anonymize(), f"*******{cpf_clean[7:]}")
+        self.assertEqual(mask_string.anonymize(), f"*********{cpf_clean[9:]}")
 
     def test_enter_type_mask_cpf_invalid(self):
         cpf_invalid = "123.456.789-20"

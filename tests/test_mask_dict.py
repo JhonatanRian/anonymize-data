@@ -2,7 +2,6 @@ import time
 import unittest
 
 from anonymizer.anonymizer import MaskDict
-from anonymizer.string_mask import MaskDispatch
 from tests.conftest import fake
 from tests.payloads import COMPLEX_DICT
 
@@ -18,26 +17,25 @@ class TestMaskDict(unittest.TestCase):
             }
         }
         self.valid_complex_dict = COMPLEX_DICT
-        self.mask_dispatch = MaskDispatch()
-        self.mask_dict = MaskDict(self.valid_dict, string_mask=self.mask_dispatch)
+        self.mask_dict = MaskDict(self.valid_dict)
 
     def test_create_mask_dict_valid(self):
-        mask_dict = MaskDict(self.valid_dict, string_mask=self.mask_dispatch)
+        mask_dict = MaskDict(self.valid_dict)
         self.assertEqual(mask_dict.view(), self.valid_dict)
 
     def test_create_mask_dict_invalid_type(self):
         with self.assertRaises(ValueError) as context:
-            MaskDict(123, string_mask=self.mask_dispatch)
+            MaskDict(123)
         self.assertEqual(str(context.exception), "Value 123 is not valid")
 
     def test_anonymize(self):
-        mask_dict = MaskDict(self.valid_dict, string_mask=self.mask_dispatch)
+        mask_dict = MaskDict(self.valid_dict)
         result = mask_dict.anonymize()
         expected_result = {"key1": "*********Data1", "key2": "*********Data2"}
         self.assertEqual(result, expected_result)
 
     def test_anonymize_nested_dict(self):
-        mask_dict = MaskDict(self.valid_nested_dict, string_mask=self.mask_dispatch)
+        mask_dict = MaskDict(self.valid_nested_dict)
         result = mask_dict.anonymize()
 
         expected_result = {
@@ -50,7 +48,7 @@ class TestMaskDict(unittest.TestCase):
 
     def test_special_characters(self):
         special_dict = {"@key!": "SensitiveData!", "#key$": "MoreData$"}
-        mask_dict = MaskDict(special_dict, string_mask=self.mask_dispatch)
+        mask_dict = MaskDict(special_dict)
         result = mask_dict.anonymize()
 
         expected_result = {"@key!": "*********Data!", "#key$": "******ta$"}
@@ -62,7 +60,7 @@ class TestMaskDict(unittest.TestCase):
             for i in range(100)
         }
 
-        mask_dict = MaskDict(large_nested_dict, string_mask=self.mask_dispatch)
+        mask_dict = MaskDict(large_nested_dict)
 
         start_time = time.time()
 
@@ -133,8 +131,16 @@ class TestMaskDict(unittest.TestCase):
         cpf = fake.cpf()
         cpf_anonymized = f"***.{cpf[4:7]}.***-**"
 
-        data = {"users": [{"cpf": cpf}], "cpfs": [cpf]}
-        expected_data = {"users": [{"cpf": cpf_anonymized}], "cpfs": [cpf_anonymized]}
+        data = {
+            "users": [{"cpf": cpf}],
+            "cpfs": [cpf],
+            "email": "jhondue.054@gmail.com",
+        }
+        expected_data = {
+            "users": [{"cpf": cpf_anonymized}],
+            "cpfs": [cpf_anonymized],
+            "email": "*********54@gmail.com",
+        }
 
         mask_dict = MaskDict(data, key_with_type_mask=True)
         mask_dict.anonymize()
