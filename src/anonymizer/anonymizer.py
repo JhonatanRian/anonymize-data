@@ -6,6 +6,7 @@ from anonymizer.mask_dispatch import MaskDispatch
 
 T = TypeVar("T")
 
+
 def dispatch_value_mask(
     value: Any, **extra: Any
 ) -> Union["MaskStr", "MaskList", "MaskDict", Any]:
