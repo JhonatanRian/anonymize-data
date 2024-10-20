@@ -3,19 +3,37 @@ repo_url: https://github.com/JhonatanRian/anonymize/tree/main
 repo_name: JhonatanRian/Anonymize
 edit_uri: tree/main/docs
 
+nav:
+  - Quickstart: index.md
+  - Tutorials: tutorials.md
+  - Api:
+      - Anonymizer: api/anonymizer.md
+      - Utils: api/utils.md
+  - Contributing: contributing.md
+
 theme:
   name: material
-  language: pt-br
   logo: assets/logo.png
 
 markdown_extensions:
   - attr_list
+  - admonition
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 extra_css:
   - stylesheets/extra.css
 
 plugins:
+  - macros
   - mkdocstrings:
       handlers:
         python:
           paths: [anonymizer]
+
+extra:
+  commands:
+    run: uv run anonymize

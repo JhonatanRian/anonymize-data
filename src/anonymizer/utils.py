@@ -1,9 +1,15 @@
 """
 Functions:
+    anonymize_string: Anonymize a string by masking a specified portion of it.
+    anonymize_email: Anonymize an email address by masking the username part.
+    anonymize_phone_number: Anonymize a phone number by masking parts of it while preserving its format.
     mask_string_part: Mask a specific part of a string with asterisks.
     anonymize_numeric_digits: Anonymize all numeric digits in a string by replacing them with asterisks.
     anonymize_substring: Anonymize a specified substring in the main text by replacing it with asterisks.
     anonymize_cpf: Anonymize a Brazilian CPF (Cadastro de Pessoas Físicas) number by masking parts of it.
+    anonymize_cnpj: Anonymize a Brazilian CNPJ (Cadastro Nacional da Pessoa Jurídica) number by masking parts of it.
+    anonymize_rg: Anonymize a Brazilian RG (Registro Geral) number by masking parts of it.
+    anonymize_pis: Anonymize a Brazilian PIS (Programa de Integração Social) number by masking parts of it.
 """
 
 import re
@@ -67,10 +73,10 @@ def anonymize_email(email: str, **kwargs) -> str:
 
     Examples:
         >>> anonymize_email("user@example.com")
-        '****@example.com'
+        '***r@example.com'
 
-        >>> anonymize_email("john.doe@gmail.com", size_anonymization=0.8)
-        '********@gmail.com'
+        >>> anonymize_email("john.doe@gmail.com")
+        '*******e@gmail.com'
 
         >>> anonymize_email("invalid-email")
         'invalid-email'
@@ -386,4 +392,6 @@ def anonymize_pis(pis: str, **kwargs) -> str:
     return mask_string_part(pattern, start=0, end=8)
 
 
-anonymize_all_string = lambda string: anonymize_string(string, size_anonymization=1)
+anonymize_all_string = lambda string, **kwargs: anonymize_string(
+    string, size_anonymization=1, **kwargs
+)

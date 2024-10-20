@@ -10,6 +10,7 @@ from anonymizer.utils import (
     anonymize_phone_number,
     anonymize_email,
     anonymize_all_string,
+    anonymize_numeric_digits,
 )
 
 
@@ -38,12 +39,8 @@ MaskDispatch.add_handler("rg", handler=anonymize_rg)
 MaskDispatch.add_handler("cep", handler=anonymize_cep)
 MaskDispatch.add_handler("pis", handler=anonymize_pis)
 
-MaskDispatch.add_handler("name", handler=anonymize_string)
-MaskDispatch.add_handler("first_name", handler=anonymize_string)
-MaskDispatch.add_handler("username", handler=anonymize_string)
 MaskDispatch.add_handler("phone", handler=anonymize_phone_number)
 MaskDispatch.add_handler("smartphone", handler=anonymize_phone_number)
-MaskDispatch.add_handler("cell_phone_number", handler=anonymize_phone_number)
 MaskDispatch.add_handler("cell_phone_number", handler=anonymize_phone_number)
 MaskDispatch.add_handler("cell_phone", handler=anonymize_phone_number)
 MaskDispatch.add_handler("celular", handler=anonymize_phone_number)
@@ -53,9 +50,12 @@ MaskDispatch.add_handler("telefone_fixo", handler=anonymize_phone_number)
 MaskDispatch.add_handler("email", handler=anonymize_email)
 MaskDispatch.add_handler("mail", handler=anonymize_email)
 
+MaskDispatch.add_handler("username", handler=anonymize_all_string)
+MaskDispatch.add_handler("first_name", handler=anonymize_all_string)
+MaskDispatch.add_handler("name", handler=anonymize_all_string)
 MaskDispatch.add_handler("nome", handler=anonymize_all_string)
-MaskDispatch.add_handler("numero", handler=anonymize_all_string)
-MaskDispatch.add_handler("number", handler=anonymize_all_string)
+MaskDispatch.add_handler("numero", handler=anonymize_numeric_digits)
+MaskDispatch.add_handler("number", handler=anonymize_numeric_digits)
 MaskDispatch.add_handler("endereco", handler=anonymize_all_string)
 MaskDispatch.add_handler("endereço", handler=anonymize_all_string)
 MaskDispatch.add_handler("address", handler=anonymize_all_string)
