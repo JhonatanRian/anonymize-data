@@ -2,12 +2,13 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import Any, Optional, TypeVar, Dict, List, Union
 
-from anonymizer.string_mask import MaskDispatch
+from anonymizer.mask_dispatch import MaskDispatch
 
 T = TypeVar("T")
 
-
-def dispatch_value_mask(value: Any, **extra: Any) -> Any:
+def dispatch_value_mask(
+    value: Any, **extra: Any
+) -> Union["MaskStr", "MaskList", "MaskDict", Any]:
     match type(value).__name__:
         case "list":
             return MaskList(value, **extra).anonymize()
@@ -45,6 +46,15 @@ class MaskBase(ABC):
     def _anonymize(self, value: Any) -> str:
         pass
 
+    def __str__(self) -> str:
+        return str(self._value_anonymized or self._value)
+
+    def __len__(self):
+        return len(self._value_anonymized or self._value)
+
+    def __iter__(self):
+        return iter(self._value_anonymized or self._value)
+
 
 class MaskStr(MaskBase):
     """
@@ -53,8 +63,9 @@ class MaskStr(MaskBase):
     Attributes:
         value (str): The string to anonymize.
         type_mask (Optional[str]): The type mask to anonymize. Default is "string".
-        string_mask (bool): If false the string will never be anonymized. default is True.
-        size_anonymization (float): The size of the anonymized string.
+        anonymize_string (Optional[bool]): If false the string will never be anonymized. default is True.
+        size_anonymization (Optional[float]): The size of the anonymized string.
+        string_masker (Optional[MaskDispatch]): Dispatcher of the string to anonymize.
 
     Returns:
         MaskStr: A object MaskStr.
@@ -83,14 +94,14 @@ class MaskStr(MaskBase):
         self,
         value: str,
         type_mask: Optional[str] = None,
-        string_mask: Optional[MaskDispatch] = None,
         anonymize_string: bool = True,
+        string_masker: Optional[MaskDispatch] = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(value)
 
         self._type_mask: str = type_mask or self._type_mask_default
-        self._string_mask: MaskDispatch = string_mask or MaskDispatch()
+        self._string_masker: MaskDispatch = string_masker or MaskDispatch()
         self.__anonymize_string: bool = anonymize_string
 
         if self._type_mask == self._type_mask_default:
@@ -100,16 +111,13 @@ class MaskStr(MaskBase):
 
         self._extra: Dict[str, Any] = kwargs
 
-    def __str__(self) -> str:
-        return self._value_anonymized or self._value
-
     def __repr__(self):
         return f"<MaskStr>"
 
     def _anonymize(self, value: str) -> str:
         if not self.__anonymize_string:
             return value
-        return self._string_mask.mask(self._type_mask, value, **self._extra)
+        return self._string_masker.mask(self._type_mask, value, **self._extra)
 
     @staticmethod
     def _validate_size_anonymization(size_anonymization: float) -> None:
@@ -130,7 +138,7 @@ class MaskList(MaskBase):
     Attributes:
         value (str): The string to anonymize.
         type_mask (Optional[str]): The type mask to anonymize. Default is "string".
-        string_mask (bool): If false the string will never be anonymized. default is True.
+        string_masker (bool): If false the string will never be anonymized. default is True.
         size_anonymization (float): The size of the anonymized string.
 
     Note:
@@ -174,15 +182,6 @@ class MaskList(MaskBase):
     def __getitem__(self, index):
         value_list = self._value_anonymized or self._value
         return value_list[index]
-
-    def __len__(self):
-        return len(self._value_anonymized or self._value)
-
-    def __iter__(self):
-        return iter(self._value_anonymized or self._value)
-
-    def __str__(self) -> str:
-        return str(self._value_anonymized or self._value)
 
     def __eq__(self, other):
         value_compare = self._value_anonymized or self._value
@@ -278,13 +277,7 @@ class MaskDict(MaskBase):
         value_dict = self._value_anonymized or self._value
         return value_dict[key]
 
-    def __len__(self):
-        return len(self._value_anonymized or self._value)
-
     def __iter__(self):
         if self._value_anonymized:
             return iter(self._value_anonymized.items())
         return iter(self._value.items())
-
-    def __str__(self) -> str:
-        return str(self._value_anonymized or self._value)
