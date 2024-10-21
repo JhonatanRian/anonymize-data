@@ -11,7 +11,6 @@ license = "MIT"
 packages = [{include = "src/anonimizer"}]
 classifiers = [
     "Programming Language :: Python :: 3.12",
-    "License :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Internet",
     "Topic :: Software Development",
@@ -26,9 +25,6 @@ dependencies = [
     "typer>=0.12.5",
     "validate-docbr>=1.10.0",
 ]
-
-[project.urls]
-Homepage = "https://github.com/pypa/sampleproject"
 
 [build-system]
 requires = ["hatchling"]
