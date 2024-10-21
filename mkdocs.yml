@@ -32,7 +32,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [anonymizer]
+          paths: [src]
 
 extra:
   commands:
