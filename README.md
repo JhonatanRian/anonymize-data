@@ -4,6 +4,9 @@
 
 # Anonymize
 
+[![Documentation Status](https://readthedocs.org/projects/anonymize/badge/?version=latest)](https://anonymize.readthedocs.io/en/latest/?badge=latest)
+
+
 The Anonymize library provides functionality to anonymize sensitive data in different formats, such as strings, lists, and dictionaries. This library is useful for developers who need to ensure data privacy in their applications.
 
 ## Quickstart
