@@ -1,6 +1,6 @@
 import unittest
-from anonymizer import MaskStr
-from anonymizer.mask_dispatch import MaskDispatch
+from anonymizer_data import MaskStr
+from anonymizer_data.mask_dispatch import MaskDispatch
 from tests.conftest import fake
 
 

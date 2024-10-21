@@ -1,6 +1,6 @@
 import unittest
 
-from anonymizer.utils import anonymize_substring
+from anonymizer_data.utils import anonymize_substring
 
 
 class TestAnonymizeSubstring(unittest.TestCase):

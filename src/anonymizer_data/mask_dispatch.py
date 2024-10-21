@@ -1,6 +1,6 @@
 from typing import Callable, Dict, Any
 
-from anonymizer.utils import (
+from anonymizer_data.utils import (
     anonymize_cpf,
     anonymize_string,
     anonymize_cnpj,

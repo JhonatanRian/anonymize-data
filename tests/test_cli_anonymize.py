@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from typer.testing import CliRunner
 
-from anonymizer.cli import app
+from anonymizer_data.cli import app
 
 runner = CliRunner()
 

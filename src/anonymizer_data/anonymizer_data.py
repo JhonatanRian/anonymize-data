@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import Any, Optional, TypeVar, Dict, List, Union
 
-from anonymizer.mask_dispatch import MaskDispatch
+from anonymizer_data.mask_dispatch import MaskDispatch
 
 T = TypeVar("T")
 

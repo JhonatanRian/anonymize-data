@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from anonymizer.anonymizer import MaskBase
+from anonymizer_data.anonymizer_data import MaskBase
 
 
 class TestMaskBase(TestCase):

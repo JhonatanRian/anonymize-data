@@ -31,7 +31,7 @@ To anonymize strings in your project you can use the `MaskStr` class.
 
 Example:
 ```python
-from anonymizer import MaskStr
+from anonymizer_data import MaskStr
 string = MaskStr("Hello Word")
 string.anonymize()
 print(string)  # result: *******ord
@@ -42,7 +42,7 @@ You can also pass a negative value to reverse the anonymization.
 
 Example:
 ```python
-from anonymizer import MaskStr
+from anonymizer_data import MaskStr
 string = MaskStr("Hello Word", size_anonymization=0.5)
 string.anonymize()
 print(string)  # result: ***** Word
@@ -55,7 +55,7 @@ List anonymization is done by the `MaskList` class.
 
 Example:
 ```python
-from anonymizer import MaskList
+from anonymizer_data import MaskList
 list_data = MaskList(['1234435', '98765432', '24295294', 'Jhon Doe'])
 list_data.anonymize()
 print(list_data)  # result: ['****435', '*****432', '*****294', '*****Doe']
@@ -67,7 +67,7 @@ Dictionary's anonymization is done by the `MaskList` class.
 
 Example:
 ```python
-from anonymizer import MaskDict
+from anonymizer_data import MaskDict
 dict_data = MaskDict(
     {
         "username": "JhonDoe",

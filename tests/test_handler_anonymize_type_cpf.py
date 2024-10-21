@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from anonymizer.utils import anonymize_cpf
+from anonymizer_data.utils import anonymize_cpf
 from tests.conftest import fake
 
 

@@ -1,7 +1,7 @@
 import unittest
 
-from anonymizer.anonymizer import MaskList
-from anonymizer.mask_dispatch import MaskDispatch
+from anonymizer_data.anonymizer_data import MaskList
+from anonymizer_data.mask_dispatch import MaskDispatch
 
 
 class TestMaskList(unittest.TestCase):

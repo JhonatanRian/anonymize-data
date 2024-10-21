@@ -7,7 +7,7 @@ nav:
   - Quickstart: index.md
   - Tutorials: tutorials.md
   - Api:
-      - Anonymizer: api/anonymizer.md
+      - Anonymizer Data: api/anonymizer_data.md
       - Utils: api/utils.md
   - Contributing: contributing.md
 

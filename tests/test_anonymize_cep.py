@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from anonymizer.utils import anonymize_cep
+from anonymizer_data.utils import anonymize_cep
 
 
 class TestAnonymizeCEP(TestCase):

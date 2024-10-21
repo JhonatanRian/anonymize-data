@@ -1,5 +1,5 @@
-from anonymizer import MaskStr
-If you've come this far, you want to know more about the anonymizer.
+
+If you've made it this far then you want to know more about anonymizer_data
 
 ### Installation
 

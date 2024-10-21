@@ -1,7 +1,7 @@
 import time
 import unittest
 
-from anonymizer.anonymizer import MaskDict
+from anonymizer_data.anonymizer_data import MaskDict
 from tests.conftest import fake
 from tests.payloads import COMPLEX_DICT
 

@@ -1,5 +1,5 @@
 [project]
-name = "anonymizer"
+name = "anonymizer_data"
 version = "0.1.0"
 authors = [
     { name="Jhonatan Rian", email="jhonatanrian@zohomail.com" },
@@ -47,7 +47,7 @@ dev-dependencies = [
 line-length = 88
 
 [project.scripts]
-anonymize = "anonymizer.cli:app"
+anonymize = "anonymizer_data.cli:app"
 
 [project.urls]
 Documentation = "https://anonymize.readthedocs.io/en/latest/"

@@ -1,6 +1,6 @@
 import unittest
 
-from anonymizer.utils import mask_string_part
+from anonymizer_data.utils import mask_string_part
 
 
 class TestMaskStrPart(unittest.TestCase):

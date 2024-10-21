@@ -1,6 +1,6 @@
 import unittest
 
-from anonymizer.utils import anonymize_string
+from anonymizer_data.utils import anonymize_string
 
 
 class TestHandlerAnonymizeString(unittest.TestCase):

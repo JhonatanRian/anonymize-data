@@ -1,7 +1,7 @@
 from rich.console import Console
 from typer import Typer, Argument
 
-from .anonymizer import MaskStr
+from anonymizer_data import MaskStr
 
 console = Console()
 app = Typer()

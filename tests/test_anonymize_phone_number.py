@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from anonymizer.utils import anonymize_phone_number
+from anonymizer_data.utils import anonymize_phone_number
 
 
 class TestAnonymizePhoneNumber(TestCase):

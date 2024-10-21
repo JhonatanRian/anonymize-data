@@ -1,6 +1,6 @@
 import unittest
 
-from anonymizer.utils import anonymize_numeric_digits
+from anonymizer_data.utils import anonymize_numeric_digits
 
 
 class TestAnonymizeNumericDigits(unittest.TestCase):

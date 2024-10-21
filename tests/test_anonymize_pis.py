@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from anonymizer.utils import anonymize_pis
+from anonymizer_data.utils import anonymize_pis
 
 
 class TestAnonymizePIS(TestCase):
