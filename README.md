@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: center">
-<img src="docs/assets/logo.png" width=100>
+<img src="https://anonymize.readthedocs.io/en/latest/assets/logo.png" width=100>
 </div>
 
 # Anonymize
