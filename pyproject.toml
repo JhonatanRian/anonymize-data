@@ -4,9 +4,10 @@ version = "0.1.0"
 authors = [
     { name="Jhonatan Rian", email="jhonatanrian@zohomail.com" },
 ]
-description = "A tool to censor sensitive data"
+description = "The Anonymize library provides functionality to anonymize sensitive data in different formats, such as strings, lists, and dictionaries. This library is useful for developers who need to ensure data privacy in their applications."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
 packages = [{include = "src/anonimizer"}]
 classifiers = [
     "Programming Language :: Python :: 3.12",
