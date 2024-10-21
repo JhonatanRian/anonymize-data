@@ -7,15 +7,23 @@ authors = [
 description = "A tool to censor sensitive data"
 readme = "README.md"
 requires-python = ">=3.12"
+packages = [{include = "src/anonimizer"}]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "License :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Internet",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Logging",
+    "Topic :: Text Processing",
+    "Topic :: Utilities"
+]
+
 dependencies = [
     "rich>=13.9.2",
     "typer>=0.12.5",
     "validate-docbr>=1.10.0",
-]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
 ]
 
 [project.urls]
@@ -43,3 +51,8 @@ line-length = 88
 
 [project.scripts]
 anonymize = "anonymizer.cli:app"
+
+[project.urls]
+Documentation = "https://anonymize.readthedocs.io/en/latest/"
+Github = "https://github.com/JhonatanRian/anonymize"
+Issues = "https://github.com/JhonatanRian/anonymize/issues"
