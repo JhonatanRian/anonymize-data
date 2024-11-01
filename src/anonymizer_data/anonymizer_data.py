@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from typing import Any, Optional, TypeVar, Dict, List, Union
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from anonymizer_data.mask_dispatch import MaskDispatch
 
@@ -111,9 +111,6 @@ class MaskStr(MaskBase):
             kwargs["size_anonymization"] = size_anonymization
 
         self._extra: Dict[str, Any] = kwargs
-
-    def __repr__(self):
-        return f"<MaskStr>"
 
     def _anonymize(self, value: str) -> str:
         if not self.__anonymize_string:
