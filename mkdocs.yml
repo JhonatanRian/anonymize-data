@@ -1,6 +1,6 @@
-site_name: Anonymize
+site_name: anonymize-data
 repo_url: https://github.com/JhonatanRian/anonymize/tree/main
-repo_name: JhonatanRian/Anonymize
+repo_name: JhonatanRian/anonymize-data
 edit_uri: tree/main/docs
 
 nav:

@@ -2,12 +2,12 @@
 <img src="https://anonymize.readthedocs.io/en/latest/assets/logo.png" width=100>
 </div>
 
-# Anonymize
+# anonymize-data
 
 [![Documentation Status](https://readthedocs.org/projects/anonymize/badge/?version=latest)](https://anonymize.readthedocs.io/en/latest/?badge=latest)
 
-
-The Anonymize library provides functionality to anonymize sensitive data in different formats, such as strings, lists, and dictionaries. This library is useful for developers who need to ensure data privacy in their applications.
+The anonymize-data library provides functionality to anonymize sensitive data in different formats, such as strings,
+lists, and dictionaries. This library is useful for developers who need to ensure data privacy in their applications.
 
 ## Quickstart
 
@@ -16,13 +16,13 @@ The Anonymize library provides functionality to anonymize sensitive data in diff
 #### pip
 
 ```shell
-pip install anonymize
+pip install anonymize-data
 ```
 
 #### uv
 
 ```
-uv add anonymize
+uv add anonymize-data
 ```
 
 ### Anonymize strings
@@ -83,8 +83,7 @@ print(dict_data)  # result: {'username': '****Doe', 'password': '******nge', 'ro
 ```
 
 > **Note:** Dictionary anonymization brings with it other advantages such as: choosing which keys in the dictionary should be anonymized;
-enabling exclusive anonymization based on the key. For example, `jhondue@example.com` would become `******e@example.com`.
-To learn more, access the [tutorial](tutorials.md)
+> enabling exclusive anonymization based on the key. For example, `jhondue@example.com` would become `******e@example.com`.
 
 ### cli
 
@@ -93,24 +92,24 @@ For this you need to have uv installed.
 
 Exemple:
 ```shell
-{{ commands.run }} "Hello Word"
+uv run anonymize "Hello Word"
 *******ord
 ```
 
 ```shell
-{{ commands.run }} --help
+uv run anonymmize --help
 Usage: anonymize [OPTIONS] VALUE [TYPE_MASK] [SIZE_ANONYMIZATION]                                                                                            
-                                                                                                                                                              
+
  cli anonymization string                                                                                                                                     
-                                                                                                                                                              
-╭─ Arguments ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ *    value                   TEXT                  The string you want to anonymize [default: None] [required]                                             │
-│      type_mask               [TYPE_MASK]           The type mask to use [default: string]                                                                  │
-│      size_anonymization      [SIZE_ANONYMIZATION]  The size anonymization factor [default: 0.7]                                                            │
-╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ --install-completion          Install completion for the current shell.                                                                                    │
-│ --show-completion             Show completion for the current shell, to copy it or customize the installation.                                             │
-│ --help                        Show this message and exit.                                                                                                  │
-╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+╭─ Arguments ───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *    value                   TEXT                  The string you want to anonymize [default: None] [required]    │
+│      type_mask               [TYPE_MASK]           The type mask to use [default: string]                         │
+│      size_anonymization      [SIZE_ANONYMIZATION]  The size anonymization factor [default: 0.7]                   │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.                                           │
+│ --show-completion             Show completion for the current shell, to copy it or customize the installation.    │
+│ --help                        Show this message and exit.                                                         │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```

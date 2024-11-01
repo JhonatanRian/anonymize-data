@@ -1,5 +1,4 @@
-
-If you've made it this far then you want to know more about anonymizer_data
+If you've made it this far then you want to know more about anonymize-data
 
 ### Installation
 

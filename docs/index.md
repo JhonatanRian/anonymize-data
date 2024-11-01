@@ -1,7 +1,9 @@
 ![Logo](assets/logo.png){ width="200" .center }
-# Anonymize
 
-The Anonymize library provides functionality to anonymize sensitive data in different formats, such as strings, lists, and dictionaries. This library is useful for developers who need to ensure data privacy in their applications.
+# anonymize-data
+
+The anonymize-data library provides functionality to anonymize sensitive data in different formats, such as strings,
+lists, and dictionaries. This library is useful for developers who need to ensure data privacy in their applications.
 
 ## Quickstart
 

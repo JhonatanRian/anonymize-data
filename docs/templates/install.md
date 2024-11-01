@@ -1,11 +1,11 @@
 #### pip
 
 ```shell
-pip install anonymize
+pip install anonymize-data
 ```
 
 #### uv
 
 ```
-uv add anonymize
+uv add anonymize-data
 ```
