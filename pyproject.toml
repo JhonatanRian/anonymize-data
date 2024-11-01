@@ -32,7 +32,6 @@ build-backend = "hatchling.build"
 
 [tool.uv]
 dev-dependencies = [
-    "black>=24.10.0",
     "coverage>=7.6.3",
     "faker>=30.6.0",
     "jinja2>=3.1.4",
@@ -41,6 +40,7 @@ dev-dependencies = [
     "mkdocs>=1.6.1",
     "mkdocstrings-python>=1.12.1",
     "mkdocstrings>=0.26.2",
+    "ruff>=0.7.1",
 ]
 
 [tool.black]
