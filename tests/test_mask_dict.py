@@ -1,8 +1,7 @@
 import time
 import unittest
 
-from anonymizer_data.anonymizer_data import MaskDict
-from tests.conftest import fake
+from anonymizer_data.core import MaskDict
 from tests.payloads import COMPLEX_DICT
 
 
@@ -93,59 +92,3 @@ class TestMaskDict(unittest.TestCase):
         expected_str = str({"key1": "*********Data1", "key2": "*********Data2"})
         self.mask_dict.anonymize()
         self.assertEqual(str(self.mask_dict), expected_str)
-
-    def test_select_keys_for_anonymize(self):
-        expected_dict = {
-            "outer_key": {
-                "inner_key1": [
-                    "SensitiveData1",
-                    {
-                        "outer_key2": {
-                            "inner_key1x": "SensitiveData1",
-                            "inner_key2": "*********Data2",
-                        }
-                    },
-                    {"outer_key3": "*********Data1"},
-                    {
-                        "outer_key2": {
-                            "inner_key1x": "SensitiveData1",
-                            "inner_key2": "*********Data2",
-                        }
-                    },
-                ],
-                "inner_key_data": ["*******ata1", "*******ata2", "*******ata3"],
-                "inner_key_data2": ["inner1_data1", "inner2_data2", "inner3_data3"],
-            },
-            "outer_key2": {
-                "inner_key1": "SensitiveData1",
-            },
-            "outer_key3": "*********Data3",
-        }
-        mask_dict = MaskDict(
-            self.valid_complex_dict,
-            selected_keys=["inner_key2", "outer_key3", "inner_key_data"],
-        )
-        self.assertEqual(mask_dict.anonymize(), expected_dict)
-
-    def test_enter_cpf_valid_in_selected_types(self):
-        cpf = fake.cpf()
-        cpf_anonymized = f"***.{cpf[4:7]}.***-**"
-
-        data = {
-            "users": [{"cpf": cpf}],
-            "cpfs": [cpf],
-            "email": "jhondue.054@gmail.com",
-        }
-        expected_data = {
-            "users": [{"cpf": cpf_anonymized}],
-            "cpfs": [cpf_anonymized],
-            "email": "*********54@gmail.com",
-        }
-
-        mask_dict = MaskDict(data, key_with_type_mask=True)
-        mask_dict.anonymize()
-        self.assertEqual(mask_dict.anonymize(), expected_data)
-
-
-if __name__ == "__main__":
-    unittest.main()

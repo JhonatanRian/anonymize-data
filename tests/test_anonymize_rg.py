@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from anonymizer_data.utils import anonymize_rg
+from anonymizer_data.handlers.functions import anonymize_rg
 
 
 class TestAnonymizeRG(TestCase):

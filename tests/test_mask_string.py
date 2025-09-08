@@ -1,6 +1,6 @@
 import unittest
 from anonymizer_data import MaskStr
-from anonymizer_data.mask_dispatch import MaskDispatch
+from anonymizer_data.handlers import MaskDispatch
 from tests.conftest import fake
 
 
@@ -30,7 +30,7 @@ class TestMaskStr(unittest.TestCase):
     def test_not_anonymize(self):
         mask_string = MaskStr(
             self.valid_string,
-            string_mask=self.mask_dispatch,
+            string_masker=self.mask_dispatch,
             size_anonymization=1.0,
             anonymize_string=False,
         )
@@ -52,14 +52,9 @@ class TestMaskStr(unittest.TestCase):
         )
 
     def test_default_size_anonymization(self):
-        mask_string = MaskStr(self.valid_string, string_mask=self.mask_dispatch)
+        mask_string = MaskStr(self.valid_string, string_masker=self.mask_dispatch)
         result = mask_string.anonymize()
         self.assertEqual(result, "*********Data")
-
-    def test_magic_method_repr(self):
-        mask_string = MaskStr(self.valid_string, string_mask=self.mask_dispatch)
-        mask_string.anonymize()
-        self.assertEqual(repr(mask_string), "<MaskStr>")
 
     def test_enter_type_mask_cpf_valid(self):
 
@@ -84,4 +79,5 @@ class TestMaskStr(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unitte
+

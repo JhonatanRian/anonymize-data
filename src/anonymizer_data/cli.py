@@ -1,9 +1,11 @@
+import os
+
 from rich.console import Console
 from typer import Typer, Argument
 
-from anonymizer_data import MaskStr
+from anonymizer_data.core import MaskStr
 
-console = Console()
+console = Console(color_system=None if os.environ.get("NO_COLOR") else "auto")
 app = Typer()
 
 

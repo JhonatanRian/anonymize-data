@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from anonymizer_data.utils import anonymize_cnpj
+from anonymizer_data.handlers.functions import anonymize_cnpj
 
 
 class TestAnonymizeCNPJ(TestCase):

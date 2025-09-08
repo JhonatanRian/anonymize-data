@@ -9,6 +9,6 @@ Classes:
 
 """
 
-from .anonymizer_data import MaskDict, MaskList, MaskStr
+from .core import MaskDict, MaskList, MaskStr
 
 __all__ = ["MaskStr", "MaskDict", "MaskList"]
