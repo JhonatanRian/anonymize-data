@@ -4,7 +4,9 @@
 
 This project is a Python library called `anonymize-data`. Its purpose is to provide a flexible and easy-to-use way to anonymize sensitive data in various formats, including strings, lists, and dictionaries. The library is designed to be used in applications where data privacy is a concern.
 
-The core of the library is built around a set of "masking" classes (`MaskStr`, `MaskList`, `MaskDict`) that handle the anonymization of different data types. A `MaskDispatch` class is used to map specific data types (e.g., "cpf", "email", "phone") to their corresponding anonymization functions. This allows for a high degree of customization and extensibility.
+The library is structured into two main components:
+- **Core (`src/anonymizer_data/core`)**: Contains the main logic for data masking. It includes a `MaskBase` class and specific implementations for strings (`MaskStr`), lists (`MaskList`), and dictionaries (`MaskDict`). The `MaskDict` class uses a strategy pattern for more flexible and extensible anonymization.
+- **Handlers (`src/anonymizer_data/handlers`)**: Contains the functions for anonymizing specific types of data (e.g., CPF, CNPJ, email) and a `MaskDispatch` class to map these functions to specific keys.
 
 The project uses `typer` for its command-line interface (CLI), `rich` for formatted output, and `validate-docbr` for validating Brazilian documents like CPF and CNPJ.
 

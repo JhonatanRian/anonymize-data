@@ -1,28 +1,13 @@
-# Histórico de Alterações do Projeto
+## 2025-09-08: Refactoring and Project Structure Improvement
 
-Este arquivo documenta todas as alterações significativas no projeto `anonymize-data`.
-
-## Formato de Entrada
-
-Cada entrada deve seguir o seguinte formato:
-
-```markdown
-### [TIPO_DA_MUDANÇA] - YYYY-MM-DD
-
-**Autor:** [Seu Nome]
-
-**Descrição:**
-
-[Uma breve descrição da mudança, incluindo o "porquê" da alteração.]
-
-**Tags:** `[tag1]`, `[tag2]`
-```
-
-### Tipos de Mudança
-
-*   **NOVO:** Adição de novas funcionalidades.
-*   **REFACTOR:** Refatoração de código existente.
-*   **FIX:** Correção de bugs.
-*   **RELEASE:** Nova versão da biblioteca.
-*   **DOC:** Mudanças na documentação.
-*   **STYLE:** Mudanças de formatação e estilo do código.
+- **Refactored the project to apply SOLID principles and improve the overall structure.**
+  - The project was restructured into `core` and `handlers` modules to better separate concerns.
+  - The `MaskDict` class was refactored to use a strategy pattern, making it more flexible and extensible.
+  - The `dispatch_value_mask` function was moved to its own module to break a circular dependency.
+- **Modernized the typing to use Python 3.12 features.**
+  - Replaced `Any` with more specific types where possible.
+  - Used `type` for type aliasing.
+- **Updated the documentation to reflect the changes.**
+  - The `docs/api` directory was updated to reflect the new structure.
+  - The `mkdocs.yml` file was updated to match the new documentation structure.
+- **Updated `GEMINI.md` to reflect the current state of the project.**
