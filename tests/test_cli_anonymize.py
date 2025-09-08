@@ -1,5 +1,5 @@
-import os
 from unittest import TestCase
+from unittest.mock import patch
 
 from typer.testing import CliRunner
 
@@ -9,13 +9,12 @@ runner = CliRunner()
 
 
 class TestAnonymizeFunction(TestCase):
-    def test_anonymize(self):
-        os.environ["NO_COLOR"] = "1"
+    @patch("rich.console.Console.print")
+    def test_anonymize(self, mock_print):
         input_value = "Sensitive Data"
         expected_output = "********* Data"
 
         result = runner.invoke(app=app, args=[input_value])
 
         self.assertEqual(result.exit_code, 0)
-        self.assertEqual(expected_output, result.output.strip())
-        del os.environ["NO_COLOR"]
+        mock_print.assert_called_once_with(expected_output, style="#ccc010 bold")
