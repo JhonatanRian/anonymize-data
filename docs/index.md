@@ -2,8 +2,9 @@
 
 # anonymize-data
 
-The anonymize-data library provides functionality to anonymize sensitive data in different formats, such as strings,
-lists, and dictionaries. This library is useful for developers who need to ensure data privacy in their applications.
+The **anonymize-data** library provides functionality to anonymize sensitive data in different formats, such as strings, lists, and dictionaries. This library is ideal for developers who need to ensure strict data privacy and sanitization in their Python applications.
+
+---
 
 ## Quickstart
 
@@ -11,69 +12,67 @@ lists, and dictionaries. This library is useful for developers who need to ensur
 
 {% include 'templates/install.md' %}
 
-### Anonymize strings
+### Basic Usage
 
-To anonymize strings in your project you can use the `MaskStr` class.
+Below you can find how to anonymize different types of data using the library. 
 
-Example:
-```python
-from anonymizer_data import MaskStr
-string = MaskStr("Hello Word")
-string.anonymize()
-print(string)  # result: *******ord
-```
+=== "Strings"
 
-You can control how much percent the string will be anonymized relative to its length via the `size_anonymization` parameter. You can pass a value from 0 to 1.  
-You can also pass a negative value to reverse the anonymization.
+    To anonymize strings in your project you can use the `MaskStr` class.
 
-Example:
-```python
-from anonymizer_data import MaskStr
-string = MaskStr("Hello Word", size_anonymization=0.5)
-string.anonymize()
-print(string)  # result: ***** Word
-MaskStr("Hello Word", size_anonymization=0.5).anonymize()  # result: Hello*****
-```
+    ```python
+    from anonymizer_data import MaskStr
+    
+    # Basic masking
+    string = MaskStr("Hello World")
+    print(string.anonymize())  # result: *******orld
+    
+    # Partial masking (50%)
+    string_half = MaskStr("Hello World", size_anonymization=0.5)
+    print(string_half.anonymize())  # result: ***** World
+    ```
 
-### Anonymize lists
+=== "Lists"
 
-List anonymization is done by the `MaskList` class.
+    List anonymization is done by the `MaskList` class. It iterates over the items and masks them appropriately.
 
-Example:
-```python
-from anonymizer_data import MaskList
-list_data = MaskList(['1234435', '98765432', '24295294', 'Jhon Doe'])
-list_data.anonymize()
-print(list_data)  # result: ['****435', '*****432', '*****294', '*****Doe']
-```
+    ```python
+    from anonymizer_data import MaskList
+    
+    list_data = MaskList(['1234435', '98765432', '24295294', 'Jhon Doe'])
+    list_data.anonymize()
+    
+    print(list_data) 
+    # result: ['****435', '*****432', '*****294', '*****Doe']
+    ```
 
-### Anonymize dict
+=== "Dictionaries"
 
-Dictionary's anonymization is done by the `MaskList` class.  
+    Dictionary anonymization is handled by the `MaskDict` class. It provides a Fluent API to easily select which keys should be anonymized.
 
-Example:
-```python
-from anonymizer_data import MaskDict
-dict_data = MaskDict(
-    {
+    ```python
+    from anonymizer_data import MaskDict
+    
+    dict_data = MaskDict({
         "username": "JhonDoe",
         "password": "123Change",
         "roles": ['Admin', 'developer'],
         "contact": {
             "number": "+55 (99) 99999-9999"
         }
-    }
-)
-dict_data.anonymize()
-print(dict_data)  # result: {'username': '****Doe', 'password': '******nge', 'roles': ['***in', '******per'], 'contact': {'number': '*************9-9999'}}
-```
+    }).with_keys(['password', 'number'])
+    
+    dict_data.anonymize()
+    print(dict_data)  
+    # result: {'username': 'JhonDoe', 'password': '*********', 'roles': ['Admin', 'developer'], 'contact': {'number': '*******************'}}
+    ```
+    
+    !!! info
+        Dictionary anonymization brings powerful advantages, enabling exclusive anonymization based on specific keys. For example, a key `"email"` holding `jhondoe@example.com` will be correctly parsed and masked. To learn more, check the [Advanced Usage](tutorials.md).
 
-!!! info
-    Dictionary anonymization brings with it other advantages such as: choosing which keys in the dictionary should be anonymized;
-    enabling exclusive anonymization based on the key. For example, `jhondue@example.com` would become `******e@example.com`.
-    To learn more, access the [tutorial](tutorials.md)
+---
 
-### Global Configuration
+## Global Configuration
 
 You can configure global settings such as the default mask character (`mask_char`), strict mode, and fallback behavior for invalid sensitive data (e.g. malformed CPF/CNPJ).
 
@@ -87,15 +86,17 @@ Config.setup(
 )
 ```
 
-### cli
+---
+
+## Command-Line Interface (CLI)
 
 You can anonymize strings from the command line.
-For this you need to have uv installed.
+For this you need to have `uv` installed.
 
-Exemple:
+Example:
 ```shell
-{{ commands.run }} "Hello Word"
-*******ord
+{{ commands.run }} "Hello World"
+*******orld
 ```
 
 ```shell

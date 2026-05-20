@@ -9,6 +9,7 @@
   - Replaced vulnerable ReDoS Regex in email anonymization with `split`.
 - **Added PEP 561 compliance (`py.typed`).**
 - **Updated `tests/` with the new expected fallback behavior and 100% pass rate.**
+- **Overhauled Documentation:** Rewrote `README.md`, `docs/index.md`, and `docs/tutorials.md` to be highly professional, objective, and concise. Included Tabs component for MkDocs and fixed all typos.
 
 ## 2025-09-08: Refactoring and Project Structure Improvement
 

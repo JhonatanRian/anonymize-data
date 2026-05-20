@@ -5,111 +5,77 @@
 # anonymize-data
 
 [![Documentation Status](https://readthedocs.org/projects/anonymize/badge/?version=latest)](https://anonymize.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/anonymize-data.svg)](https://badge.fury.io/py/anonymize-data)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-The anonymize-data library provides functionality to anonymize sensitive data in different formats, such as strings,
-lists, and dictionaries. This library is useful for developers who need to ensure data privacy in their applications.
+**anonymize-data** is a powerful, flexible, and extensible Python library designed to sanitize and anonymize sensitive data. It provides seamless anonymization for strings, lists, and dictionaries, ensuring data privacy in your applications and logs.
+
+---
+
+## Key Features
+
+- **Multi-Type Support**: Easily mask primitive strings, nested lists, and complex dictionaries.
+- **Fluent API**: Chain methods for elegant dictionary manipulation (e.g., `.with_keys(['cpf', 'password'])`).
+- **Global Configuration**: Centrally manage default mask characters and security policies.
+- **Strict Data Privacy**: Built-in fallback protection masks invalid sensitive data entirely to prevent silent data leaks.
+- **Extensible Architecture**: Customize behavior easily thanks to an underlying Registry Pattern.
+- **Command-Line Interface (CLI)**: Quickly anonymize text right from your terminal.
 
 ## Quickstart
 
 ### Installation
 
-#### pip
+Choose your preferred package manager:
 
-```shell
+**pip**:
+```bash
 pip install anonymize-data
 ```
 
-#### uv
-
-```
+**uv**:
+```bash
 uv add anonymize-data
 ```
 
-### Anonymize strings
+### Basic Usage
 
-To anonymize strings in your project you can use the `MaskStr` class.
+Anonymize data with just a few lines of code:
 
-Example:
 ```python
-from anonymizer_data import MaskStr
-string = MaskStr("Hello Word")
-string.anonymize()
-print(string)  # result: *******ord
-```
+from anonymizer_data import MaskStr, MaskDict
 
-You can control how much percent the string will be anonymized relative to its length via the `size_anonymization` parameter. You can pass a value from 0 to 1.  
-You can also pass a negative value to reverse the anonymization.
+# String Anonymization
+string_mask = MaskStr("Hello World")
+print(string_mask.anonymize())  # Output: *******orld
 
-Example:
-```python
-from anonymizer_data import MaskStr
-string = MaskStr("Hello Word", size_anonymization=0.5)
-string.anonymize()
-print(string)  # result: ***** Word
-MaskStr("Hello Word", size_anonymization=0.5).anonymize()  # result: Hello*****
-```
-
-### Anonymize lists
-
-List anonymization is done by the `MaskList` class.
-
-Example:
-```python
-from anonymizer_data import MaskList
-list_data = MaskList(['1234435', '98765432', '24295294', 'Jhon Doe'])
-list_data.anonymize()
-print(list_data)  # result: ['****435', '*****432', '*****294', '*****Doe']
-```
-
-### Anonymize dict
-
-Dictionary's anonymization is done by the `MaskList` class.
-
-Example:
-```python
-from anonymizer_data import MaskDict
-dict_data = MaskDict(
-    {
-        "username": "JhonDoe",
-        "password": "123Change",
-        "roles": ['Admin', 'developer'],
-        "contact": {
-            "number": "+55 (99) 99999-9999"
-        }
+# Dictionary Anonymization with Fluent API
+user_data = {
+    "username": "JhonDoe",
+    "password": "123Change",
+    "roles": ['Admin', 'developer'],
+    "contact": {
+        "number": "+55 (99) 99999-9999"
     }
-)
-dict_data.anonymize()
-print(dict_data)  # result: {'username': '****Doe', 'password': '******nge', 'roles': ['***in', '******per'], 'contact': {'number': '*************9-9999'}}
+}
+
+masked_dict = MaskDict(user_data).with_keys(['password', 'number'])
+print(masked_dict.anonymize())
+# Output: {'username': 'JhonDoe', 'password': '*********', 'roles': ['Admin', 'developer'], 'contact': {'number': '*******************'}}
 ```
 
-> **Note:** Dictionary anonymization brings with it other advantages such as: choosing which keys in the dictionary should be anonymized;
-> enabling exclusive anonymization based on the key. For example, `jhondue@example.com` would become `******e@example.com`.
+> **Note:** Dictionary anonymization allows for exclusive targeting based on keys. For example, specific sensitive fields like emails or phone numbers can be mapped to specialized masking functions under the hood.
 
-### cli
+## Command-Line Interface (CLI)
 
-You can anonymize strings from the command line.
-For this you need to have uv installed.
+You can anonymize strings directly from your terminal using `uv`:
 
-Exemple:
-```shell
-uv run anonymize "Hello Word"
-*******ord
+```bash
+uv run anonymize "Hello World"
+# Output: *******orld
+
+uv run anonymize --help
 ```
 
-```shell
-uv run anonymmize --help
-Usage: anonymize [OPTIONS] VALUE [TYPE_MASK] [SIZE_ANONYMIZATION]                                                                                            
+## Documentation
 
- cli anonymization string                                                                                                                                     
-
-╭─ Arguments ───────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ *    value                   TEXT                  The string you want to anonymize [default: None] [required]    │
-│      type_mask               [TYPE_MASK]           The type mask to use [default: string]                         │
-│      size_anonymization      [SIZE_ANONYMIZATION]  The size anonymization factor [default: 0.7]                   │
-╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ --install-completion          Install completion for the current shell.                                           │
-│ --show-completion             Show completion for the current shell, to copy it or customize the installation.    │
-│ --help                        Show this message and exit.                                                         │
-╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-```
+For comprehensive guides, advanced usage, global configurations, and API reference, please visit our [Official Documentation](https://anonymize.readthedocs.io/en/latest/).
