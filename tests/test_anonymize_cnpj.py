@@ -12,10 +12,10 @@ class TestAnonymizeCNPJ(TestCase):
         self.assertEqual(anonymize_cnpj("12345678000195"), "*********00195")
 
     def test_anonymize_invalid_cnpj(self):
-        self.assertEqual(anonymize_cnpj("invalid-cnpj"), "invalid-cnpj")
+        self.assertEqual(anonymize_cnpj("invalid-cnpj"), '************')
 
     def test_anonymize_short_cnpj(self):
-        self.assertEqual(anonymize_cnpj("123"), "123")
+        self.assertEqual(anonymize_cnpj("123"), '***')
 
     def test_anonymize_empty_string(self):
         self.assertEqual(anonymize_cnpj(""), "")

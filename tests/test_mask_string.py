@@ -72,12 +72,12 @@ class TestMaskStr(unittest.TestCase):
         cpf_invalid_clean = "12345678920"
 
         mask_string = MaskStr(cpf_invalid, type_mask="cpf")
-        self.assertEqual(mask_string.anonymize(), cpf_invalid)
+        self.assertEqual(mask_string.anonymize(), "*" * len(cpf_invalid))
 
         mask_string = MaskStr(cpf_invalid_clean, type_mask="cpf")
-        self.assertEqual(mask_string.anonymize(), cpf_invalid_clean)
+        self.assertEqual(mask_string.anonymize(), "*" * len(cpf_invalid_clean))
 
 
 if __name__ == "__main__":
-    unitte
+    unittest.main()
 

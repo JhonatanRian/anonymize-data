@@ -12,10 +12,10 @@ class TestAnonymizeRG(TestCase):
         self.assertEqual(anonymize_rg("123456789"), "******789")
 
     def test_anonymize_invalid_rg(self):
-        self.assertEqual(anonymize_rg("invalid-rg"), "invalid-rg")
+        self.assertEqual(anonymize_rg("invalid-rg"), '**********')
 
     def test_anonymize_short_rg(self):
-        self.assertEqual(anonymize_rg("123"), "123")
+        self.assertEqual(anonymize_rg("123"), '***')
 
     def test_anonymize_empty_string(self):
         self.assertEqual(anonymize_rg(""), "")

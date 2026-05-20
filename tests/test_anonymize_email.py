@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+import unittest
 from anonymizer_data.handlers.functions import anonymize_email
 
 
@@ -9,7 +10,7 @@ class TestAnonymizeEmail(TestCase):
         self.assertEqual(anonymize_email("user@example.com"), "***r@example.com")
 
     def test_anonymize_invalid_email(self):
-        self.assertEqual(anonymize_email("invalid-email"), "invalid-email")
+        self.assertEqual(anonymize_email("invalid-email"), '*************')
 
     def test_anonymize_short_email(self):
         self.assertEqual(anonymize_email("a@b.com"), "*@b.com")

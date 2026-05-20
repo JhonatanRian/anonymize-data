@@ -15,8 +15,20 @@ Functions:
 import re
 
 from validate_docbr import CNPJ, CPF, PIS
+from anonymizer_data.core.config import Config
+from .dispatch import MaskDispatch
 
 
+def _handle_invalid_doc(doc: str, doc_name: str, **kwargs) -> str:
+    """Helper to handle invalid documents according to Config."""
+    if Config.strict_mode:
+        raise ValueError(f"Invalid {doc_name}: {doc}")
+    if Config.fallback_masking:
+        return anonymize_all_string(doc, **kwargs)
+    return doc
+
+
+@MaskDispatch.register("string")
 def anonymize_string(value: str, size_anonymization: float, **kwargs) -> str:
     """
     Anonymize a string by masking a specified portion of it.
@@ -31,32 +43,21 @@ def anonymize_string(value: str, size_anonymization: float, **kwargs) -> str:
 
     Returns:
         str: The masked version of the input string. If `size_anonymization` is set such that no characters are masked, the original string will be returned.
-
-    Examples:
-        >>> anonymize_string("Hello World", 0.5)
-        '***** World'
-
-        >>> anonymize_string("SensitiveData", 0.8)
-        '***********ata'
-
-        >>> anonymize_string("A", 1)
-        '*'
-
-        >>> anonymize_string("Test", 0)
-        'Test'
     """
     if size_anonymization == 0:
         return value
 
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
     total_to_mask = 1 if len(value) == 1 else int(len(value) * size_anonymization)
     string_sliced = (
         value[:total_to_mask] if total_to_mask > 0 else value[total_to_mask:]
     )
     pattern = re.escape(string_sliced)
-    modified = re.sub(pattern, "*" * abs(total_to_mask), value, count=1)
+    modified = re.sub(pattern, mask_char * abs(total_to_mask), value, count=1)
     return modified
 
 
+@MaskDispatch.register("email", "mail")
 def anonymize_email(email: str, **kwargs) -> str:
     """
     Anonymize an email address by masking the username part.
@@ -69,26 +70,21 @@ def anonymize_email(email: str, **kwargs) -> str:
         email (str): The original email address to be anonymized.
 
     Returns:
-        str: The masked version of the email address. If the input email is not valid, it returns the original email.
-
-    Examples:
-        >>> anonymize_email("user@example.com")
-        '***r@example.com'
-
-        >>> anonymize_email("john.doe@gmail.com")
-        '*******e@gmail.com'
-
-        >>> anonymize_email("invalid-email")
-        'invalid-email'
+        str: The masked version of the email address.
     """
-    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-        return email
+    if not isinstance(email, str) or "@" not in email:
+        return _handle_invalid_doc(str(email), "Email", **kwargs)
+        
     username, domain = email.split("@", 1)
+    if not username or not domain:
+        return _handle_invalid_doc(str(email), "Email", **kwargs)
+        
     masked_username = anonymize_string(username, size_anonymization=0.9, **kwargs)
 
     return f"{masked_username}@{domain}"
 
 
+@MaskDispatch.register("phone", "smartphone", "cell_phone_number", "cell_phone", "celular", "telefone", "telefone_fixo")
 def anonymize_phone_number(phone: str, **kwargs) -> str:
     """
     Anonymize a phone number by masking parts of it while preserving its format.
@@ -102,40 +98,25 @@ def anonymize_phone_number(phone: str, **kwargs) -> str:
 
     Returns:
         str: The masked version of the phone number.
-
-    Examples:
-        >>> anonymize_phone_number("+55 (11) 91234-5678")
-        '+** (**) *****-*678'
-
-        >>> anonymize_phone_number("123-456-7890")
-        '***-***-*890'
-
-        >>> anonymize_phone_number("9876543210")
-        '*******210'
     """
+    if not isinstance(phone, str):
+        return _handle_invalid_doc(str(phone), "Phone", **kwargs)
+
     phone_digits = re.findall(r"\d", phone)
 
     if len(phone_digits) < 3:
-        return phone
+        return _handle_invalid_doc(phone, "Phone", **kwargs)
 
-    last_three = "".join(phone_digits[-3:])
-
-    anonymized = "*" * (len(phone_digits) - 3)
-
-    index_digit = 0
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
+    last_three = phone_digits[-3:]
+    anonymized = [mask_char] * (len(phone_digits) - 3)
+    
+    replace_iter = iter(anonymized + last_three)
 
     def to_replace(match):
-        nonlocal index_digit
-        if index_digit < len(anonymized):
-            result = anonymized[index_digit]
-            index_digit += 1
-            return result
-        else:
-            index_digit += 1
-            return last_three[(index_digit - 1) - len(anonymized)]
+        return next(replace_iter)
 
     phone_anonymized = re.sub(r"\d", to_replace, phone)
-
     return phone_anonymized
 
 
@@ -154,18 +135,13 @@ def mask_string_part(string: str, start: int, end: int, occurrences=1, **kwargs)
 
     Returns:
         str: The modified string with the specified substring replaced by asterisks.
-
-    Examples:
-        >>> mask_string_part('Hello Word!', 6, 10)
-        'Hello, *****!'
-
-        >>> mask_string_part('the monkey hit the monkey', 4, 10, 2)
-        'the ****** hit the ******'
     """
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
     pattern = re.escape(string[start:end])
-    return re.sub(pattern, "*" * (end - start), string, count=occurrences)
+    return re.sub(pattern, mask_char * (end - start), string, count=occurrences)
 
 
+@MaskDispatch.register("numero", "number")
 def anonymize_numeric_digits(string: str, **kwargs) -> str:
     """
     Anonymize all numeric digits in a string by replacing them with asterisks.
@@ -178,16 +154,9 @@ def anonymize_numeric_digits(string: str, **kwargs) -> str:
 
     Returns:
         str: The modified string with all numeric digits replaced by asterisks.
-
-    Examples:
-        >>> anonymize_numeric_digits("My phone number is 123-456-7890.")
-        'My phone number is ***-***-****.'
-
-        >>> anonymize_numeric_digits("The price is $100.50.")
-        'The price is $***.**.'
     """
-
-    return re.sub(r"\d", "*", string)
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
+    return re.sub(r"\d", mask_char, str(string))
 
 
 def anonymize_substring(
@@ -206,22 +175,16 @@ def anonymize_substring(
 
     Returns:
         str: The modified text with the specified substring replaced by asterisks.
-
-    Examples:
-        >>> anonymize_substring("Hello, my password is secret123.", "password")
-        'Hello, my ******** is secret123.'
-
-        >>> anonymize_substring("This is a test. Test this test.", "test", occurrences=2)
-        'This is a ****. Test this ****.'
     """
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
     escaped_substring = re.escape(substring)
-
     anonymized_text = re.sub(
-        escaped_substring, "*" * len(substring), main_text, count=occurrences
+        escaped_substring, mask_char * len(substring), str(main_text), count=occurrences
     )
     return anonymized_text
 
 
+@MaskDispatch.register("cpf", "cpfs")
 def anonymize_cpf(cpf: str, **kwargs) -> str:
     """
     Anonymize a Brazilian CPF (Cadastro de Pessoas Físicas) number by masking parts of it.
@@ -236,26 +199,20 @@ def anonymize_cpf(cpf: str, **kwargs) -> str:
 
     Returns:
         str: The masked version of the CPF number.
-
-    Examples:
-        >>> anonymize_cpf("123.456.789-09")
-        '***.456.***-**'
-
-        >>> anonymize_cpf("12345678909")
-        '*******09'
     """
-
     validate_cpf = CPF()
-    if type(cpf) != str or not validate_cpf.validate(cpf):
-        return cpf
+    if not isinstance(cpf, str) or not validate_cpf.validate(cpf):
+        return _handle_invalid_doc(str(cpf), "CPF", **kwargs)
 
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
     pattern = re.sub(r"[^0-9]", "", cpf)
 
     if "." in cpf and "-" in cpf:
-        return f"***.{pattern[3:6]}.***-**"
-    return mask_string_part(pattern, start=0, end=9)
+        return f"{mask_char*3}.{pattern[3:6]}.{mask_char*3}-{mask_char*2}"
+    return mask_string_part(pattern, start=0, end=9, **kwargs)
 
 
+@MaskDispatch.register("cnpj")
 def anonymize_cnpj(cnpj: str, **kwargs) -> str:
     """
     Anonymize a Brazilian CNPJ (Cadastro Nacional da Pessoa Jurídica) number by masking parts of it.
@@ -270,25 +227,20 @@ def anonymize_cnpj(cnpj: str, **kwargs) -> str:
 
     Returns:
         str: The masked version of the CNPJ number.
-
-    Examples:
-        >>> anonymize_cnpj("12.345.678/0001-95")
-        '**.***.678/****-**'
-
-        >>> anonymize_cnpj("12345678000195")
-        '*******00195'
     """
     validate_cnpj = CNPJ()
-    if not validate_cnpj.validate(cnpj):
-        return cnpj
+    if not isinstance(cnpj, str) or not validate_cnpj.validate(cnpj):
+        return _handle_invalid_doc(str(cnpj), "CNPJ", **kwargs)
 
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
     pattern = re.sub(r"[^0-9]", "", cnpj)
 
-    if "." in cnpj and "-" in cnpj and "-" in cnpj:
-        return f"**.***.{pattern[5:8]}/****-**"
-    return mask_string_part(pattern, start=0, end=9)
+    if "." in cnpj and "-" in cnpj and "/" in cnpj: # Original had a bug `"-" in cnpj and "-" in cnpj`. Let's fix that too.
+        return f"{mask_char*2}.{mask_char*3}.{pattern[5:8]}/{mask_char*4}-{mask_char*2}"
+    return mask_string_part(pattern, start=0, end=9, **kwargs)
 
 
+@MaskDispatch.register("rg")
 def anonymize_rg(rg: str, **kwargs) -> str:
     """
     Anonymize a Brazilian RG (Registro Geral) number by masking parts of it.
@@ -303,25 +255,19 @@ def anonymize_rg(rg: str, **kwargs) -> str:
 
     Returns:
         str: The masked version of the RG number.
-
-    Examples:
-        >>> anonymize_rg("12.345.678-9")
-        '**.345.***-**'
-
-        >>> anonymize_rg("123456789")
-        '*****6789'
     """
+    if not isinstance(rg, str) or not re.match(r"^(?:\d{9}|\d{2}\.\d{3}\.\d{3}-\d)$", rg):
+        return _handle_invalid_doc(str(rg), "RG", **kwargs)
 
-    if not re.match(r"^(?:\d{9}|\d{2}\.\d{3}\.\d{3}-\d)$", rg):
-        return rg
-
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
     pattern = re.sub(r"[^0-9]", "", rg)
 
     if "." in rg and "-" in rg:
-        return f"**.{pattern[2:5]}.***-**"
-    return mask_string_part(pattern, start=0, end=6)
+        return f"{mask_char*2}.{pattern[2:5]}.{mask_char*3}-{mask_char*2}"
+    return mask_string_part(pattern, start=0, end=6, **kwargs)
 
 
+@MaskDispatch.register("cep")
 def anonymize_cep(cep: str, **kwargs) -> str:
     """
     Anonymize a Brazilian CEP (Código de Endereçamento Postal) by masking parts of it.
@@ -336,24 +282,19 @@ def anonymize_cep(cep: str, **kwargs) -> str:
 
     Returns:
         str: The masked version of the CEP number.
-
-    Examples:
-        >>> anonymize_cep("12345-678")
-        '*****-678'
-
-        >>> anonymize_cep("12345678")
-        '*****678'
     """
-    if not re.match(r"^\d{5}-?\d{3}$", cep):
-        return cep
+    if not isinstance(cep, str) or not re.match(r"^\d{5}-?\d{3}$", cep):
+        return _handle_invalid_doc(str(cep), "CEP", **kwargs)
 
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
     pattern = re.sub(r"[^0-9]", "", cep)
 
     if "-" in cep:
-        return f"*****-{cep[6:]}"
-    return mask_string_part(pattern, start=0, end=5)
+        return f"{mask_char*5}-{cep[6:]}"
+    return mask_string_part(pattern, start=0, end=5, **kwargs)
 
 
+@MaskDispatch.register("pis")
 def anonymize_pis(pis: str, **kwargs) -> str:
     """
     Anonymize a Brazilian PIS (Programa de Integração Social) number by masking parts of it.
@@ -368,30 +309,26 @@ def anonymize_pis(pis: str, **kwargs) -> str:
 
     Returns:
         str: The masked version of the PIS number.
-
-    Examples:
-        >>> anonymize_pis("123.45678.90-1")
-        '***.**678.**-*'
-
-        >>> anonymize_pis("12345678901")
-        '*******901'
-
-    Note:
-        Data validation is performed by the [validate_docbr](https://pypi.org/project/validate-docbr) lib. If the data passed is not valid, it is returned without changes.
     """
-
     validate_pis = PIS()
 
-    if not validate_pis.validate(pis):
-        return pis
+    if not isinstance(pis, str) or not validate_pis.validate(pis):
+        return _handle_invalid_doc(str(pis), "PIS", **kwargs)
 
+    mask_char = kwargs.get("mask_char", Config.default_mask_char)
     pattern = re.sub(r"[^0-9]", "", pis)
 
     if "-" in pis:
-        return f"***.**{pattern[5:8]}.**-*"
-    return mask_string_part(pattern, start=0, end=8)
+        return f"{mask_char*3}.{mask_char*2}{pattern[5:8]}.{mask_char*2}-{mask_char}"
+    return mask_string_part(pattern, start=0, end=8, **kwargs)
 
 
-anonymize_all_string = lambda string, **kwargs: anonymize_string(
-    string, size_anonymization=1, **kwargs
+@MaskDispatch.register(
+    "username", "first_name", "name", "nome", "endereco", "endereço", "address", 
+    "bairro", "neighborhood", "district", "suburb", "quarter", "sexo", "sex", 
+    "gender", "raça", "raca", "race", "cor", "color", "senha", "password", 
+    "tipo_sanguineo", "blood_type"
 )
+def anonymize_all_string(string: str, **kwargs) -> str:
+    """Anonymize all characters of a string."""
+    return anonymize_string(str(string), size_anonymization=1.0, **kwargs)

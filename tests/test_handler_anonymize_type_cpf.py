@@ -17,10 +17,10 @@ class AnonymizeCPFTestCase(TestCase):
         cpf = "12345678910"
 
         result = anonymize_cpf(cpf)
-        self.assertEqual(result, cpf)
+        self.assertEqual(result, "*" * len(str(cpf)))
 
     def test_unsupported_type_data(self):
         cpf = 12345678910
 
         result = anonymize_cpf(cpf)
-        self.assertEqual(result, cpf)
+        self.assertEqual(result, "*" * len(str(cpf)))

@@ -17,10 +17,10 @@ class TestAnonymizePhoneNumber(TestCase):
         self.assertEqual(anonymize_phone_number("9876543210"), "*******210")
 
     def test_anonymize_short_phone(self):
-        self.assertEqual(anonymize_phone_number("12"), "12")
+        self.assertEqual(anonymize_phone_number("12"), '**')
 
     def test_anonymize_invalid_phone(self):
-        self.assertEqual(anonymize_phone_number("abc"), "abc")
+        self.assertEqual(anonymize_phone_number("abc"), '***')
 
     def test_anonymize_empty_string(self):
         self.assertEqual(anonymize_phone_number(""), "")

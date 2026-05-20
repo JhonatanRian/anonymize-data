@@ -1,6 +1,6 @@
-from typing import Any, Callable, Dict, Union
+from typing import Any, Callable, Dict
 
-Masker = Union["MaskStr", "MaskList", "MaskDict", Any]
+Masker = Any
 MaskerFactory = Callable[..., Masker]
 
 
