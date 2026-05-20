@@ -28,7 +28,7 @@ graph TD;
 If you do not want all data to be anonymized, you can pass a list of keys that should be anonymized.
 
 ```python
-from anonymizer import MaskDict
+from anonymizer_data import MaskDict
 dict_data = MaskDict(
     {
         "username": "JhonDoe",
@@ -37,8 +37,8 @@ dict_data = MaskDict(
         "contact": {
             "number": "+55 (99) 99999-9999"
         }
-    }, selected_keys=['password', 'number']
-)
+    }
+).with_keys(['password', 'number'])
 dict_data.anonymize()
 print(dict_data)  # {'username': 'JhonDoe', 'password': '******nge', 'roles': ['Admin', 'developer'], 'contact': {'number': '*************9-9999'}}
 ```

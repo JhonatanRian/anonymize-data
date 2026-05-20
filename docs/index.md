@@ -73,6 +73,20 @@ print(dict_data)  # result: {'username': '****Doe', 'password': '******nge', 'ro
     enabling exclusive anonymization based on the key. For example, `jhondue@example.com` would become `******e@example.com`.
     To learn more, access the [tutorial](tutorials.md)
 
+### Global Configuration
+
+You can configure global settings such as the default mask character (`mask_char`), strict mode, and fallback behavior for invalid sensitive data (e.g. malformed CPF/CNPJ).
+
+```python
+from anonymizer_data.core.config import Config
+
+Config.setup(
+    mask_char="X",         # Default is "*"
+    strict_mode=False,     # If True, raises ValueError on invalid formats
+    fallback_masking=True  # If True, entirely masks invalid formats to avoid data leaks
+)
+```
+
 ### cli
 
 You can anonymize strings from the command line.
