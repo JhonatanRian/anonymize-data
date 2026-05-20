@@ -13,13 +13,14 @@ Functions:
 """
 
 import re
+from typing import Any
 
 from validate_docbr import CNPJ, CPF, PIS
 from anonymizer_data.core.config import Config
 from .dispatch import MaskDispatch
 
 
-def _handle_invalid_doc(doc: str, doc_name: str, **kwargs) -> str:
+def _handle_invalid_doc(doc: str, doc_name: str, **kwargs: Any) -> str:
     """Helper to handle invalid documents according to Config."""
     if Config.strict_mode:
         raise ValueError(f"Invalid {doc_name}: {doc}")
@@ -29,7 +30,7 @@ def _handle_invalid_doc(doc: str, doc_name: str, **kwargs) -> str:
 
 
 @MaskDispatch.register("string")
-def anonymize_string(value: str, size_anonymization: float, **kwargs) -> str:
+def anonymize_string(value: str, size_anonymization: float, **kwargs: Any) -> str:
     """
     Anonymize a string by masking a specified portion of it.
 
@@ -58,7 +59,7 @@ def anonymize_string(value: str, size_anonymization: float, **kwargs) -> str:
 
 
 @MaskDispatch.register("email", "mail")
-def anonymize_email(email: str, **kwargs) -> str:
+def anonymize_email(email: str, **kwargs: Any) -> str:
     """
     Anonymize an email address by masking the username part.
 
@@ -85,7 +86,7 @@ def anonymize_email(email: str, **kwargs) -> str:
 
 
 @MaskDispatch.register("phone", "smartphone", "cell_phone_number", "cell_phone", "celular", "telefone", "telefone_fixo")
-def anonymize_phone_number(phone: str, **kwargs) -> str:
+def anonymize_phone_number(phone: str, **kwargs: Any) -> str:
     """
     Anonymize a phone number by masking parts of it while preserving its format.
 
@@ -120,7 +121,7 @@ def anonymize_phone_number(phone: str, **kwargs) -> str:
     return phone_anonymized
 
 
-def mask_string_part(string: str, start: int, end: int, occurrences=1, **kwargs) -> str:
+def mask_string_part(string: str, start: int, end: int, occurrences: int = 1, **kwargs: Any) -> str:
     """
     Mask a specific part of a string with asterisks.
 
@@ -142,7 +143,7 @@ def mask_string_part(string: str, start: int, end: int, occurrences=1, **kwargs)
 
 
 @MaskDispatch.register("numero", "number")
-def anonymize_numeric_digits(string: str, **kwargs) -> str:
+def anonymize_numeric_digits(string: str, **kwargs: Any) -> str:
     """
     Anonymize all numeric digits in a string by replacing them with asterisks.
 
@@ -160,7 +161,7 @@ def anonymize_numeric_digits(string: str, **kwargs) -> str:
 
 
 def anonymize_substring(
-    main_text: str, substring: str, occurrences: int = 1, **kwargs
+    main_text: str, substring: str, occurrences: int = 1, **kwargs: Any
 ) -> str:
     """
     Anonymize a specified substring in the main text by replacing it with asterisks.
@@ -185,7 +186,7 @@ def anonymize_substring(
 
 
 @MaskDispatch.register("cpf", "cpfs")
-def anonymize_cpf(cpf: str, **kwargs) -> str:
+def anonymize_cpf(cpf: str, **kwargs: Any) -> str:
     """
     Anonymize a Brazilian CPF (Cadastro de Pessoas Físicas) number by masking parts of it.
 
@@ -213,7 +214,7 @@ def anonymize_cpf(cpf: str, **kwargs) -> str:
 
 
 @MaskDispatch.register("cnpj")
-def anonymize_cnpj(cnpj: str, **kwargs) -> str:
+def anonymize_cnpj(cnpj: str, **kwargs: Any) -> str:
     """
     Anonymize a Brazilian CNPJ (Cadastro Nacional da Pessoa Jurídica) number by masking parts of it.
 
@@ -241,7 +242,7 @@ def anonymize_cnpj(cnpj: str, **kwargs) -> str:
 
 
 @MaskDispatch.register("rg")
-def anonymize_rg(rg: str, **kwargs) -> str:
+def anonymize_rg(rg: str, **kwargs: Any) -> str:
     """
     Anonymize a Brazilian RG (Registro Geral) number by masking parts of it.
 
@@ -268,7 +269,7 @@ def anonymize_rg(rg: str, **kwargs) -> str:
 
 
 @MaskDispatch.register("cep")
-def anonymize_cep(cep: str, **kwargs) -> str:
+def anonymize_cep(cep: str, **kwargs: Any) -> str:
     """
     Anonymize a Brazilian CEP (Código de Endereçamento Postal) by masking parts of it.
 
@@ -295,7 +296,7 @@ def anonymize_cep(cep: str, **kwargs) -> str:
 
 
 @MaskDispatch.register("pis")
-def anonymize_pis(pis: str, **kwargs) -> str:
+def anonymize_pis(pis: str, **kwargs: Any) -> str:
     """
     Anonymize a Brazilian PIS (Programa de Integração Social) number by masking parts of it.
 
@@ -329,6 +330,6 @@ def anonymize_pis(pis: str, **kwargs) -> str:
     "gender", "raça", "raca", "race", "cor", "color", "senha", "password", 
     "tipo_sanguineo", "blood_type"
 )
-def anonymize_all_string(string: str, **kwargs) -> str:
+def anonymize_all_string(string: str, **kwargs: Any) -> str:
     """Anonymize all characters of a string."""
     return anonymize_string(str(string), size_anonymization=1.0, **kwargs)

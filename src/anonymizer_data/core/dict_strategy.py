@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable
 
 
 class DictAnonymizationStrategy(ABC):
@@ -9,12 +9,12 @@ class DictAnonymizationStrategy(ABC):
         self._extra = kwargs
 
     @abstractmethod
-    def anonymize(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def anonymize(self, data: dict[str, Any]) -> dict[str, Any]:
         pass
 
 
 class DefaultDictAnonymizationStrategy(DictAnonymizationStrategy):
-    def anonymize(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def anonymize(self, data: dict[str, Any]) -> dict[str, Any]:
         anonymized_dict = {}
         for key, value in data.items():
             anonymized_dict[key] = self._dispatcher_func(value, **self._extra)
@@ -22,11 +22,11 @@ class DefaultDictAnonymizationStrategy(DictAnonymizationStrategy):
 
 
 class KeyBasedDictAnonymizationStrategy(DictAnonymizationStrategy):
-    def __init__(self, selected_keys: List[str], dispatcher_func: Callable[..., Any], **kwargs: Any) -> None:
+    def __init__(self, selected_keys: list[str], dispatcher_func: Callable[..., Any], **kwargs: Any) -> None:
         super().__init__(dispatcher_func, **kwargs)
         self._selected_keys = selected_keys
 
-    def anonymize(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def anonymize(self, data: dict[str, Any]) -> dict[str, Any]:
         anonymized_dict = {}
         for key, value in data.items():
             extra_data = deepcopy(self._extra)
@@ -37,7 +37,7 @@ class KeyBasedDictAnonymizationStrategy(DictAnonymizationStrategy):
 
 
 class KeyAsTypeMaskDictAnonymizationStrategy(DictAnonymizationStrategy):
-    def anonymize(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def anonymize(self, data: dict[str, Any]) -> dict[str, Any]:
         anonymized_dict = {}
         for key, value in data.items():
             extra_data = deepcopy(self._extra)

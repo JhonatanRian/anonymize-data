@@ -1,9 +1,9 @@
-from typing import Callable, Dict, Any
+from typing import Any, Callable
 
 class MaskDispatch:
     """Class responsible for managing anonymization handlers."""
 
-    _handlers: Dict[str, Callable[[Any, Any], Any]] = {}
+    _handlers: dict[str, Callable[..., Any]] = {}
 
     @classmethod
     def register(cls, *type_masks: str) -> Callable:

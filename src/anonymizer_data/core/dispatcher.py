@@ -1,10 +1,10 @@
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 Masker = Any
 MaskerFactory = Callable[..., Masker]
 
 
-DEFAULT_MASKERS: Dict[str, MaskerFactory] = {}
+DEFAULT_MASKERS: dict[str, MaskerFactory] = {}
 
 
 def dispatch_value_mask(value: Any, **extra: Any) -> Masker:

@@ -1,9 +1,9 @@
-from typing import Any, Dict, List
+from typing import Any
 
-from .base import MaskBase, T
+from .base import MaskBase
 
 
-class MaskList(MaskBase[List[T]]):
+class MaskList[T](MaskBase[list[T]]):
     """
     This class anonymizes data contained in lists. Just like `MaskDict`, it can be data of type `str`, `dict` or `list`.
 
@@ -40,10 +40,10 @@ class MaskList(MaskBase[List[T]]):
 
     _allowed_type = list
 
-    def __init__(self, value: List[T], **kwargs: Any) -> None:
+    def __init__(self, value: list[T], **kwargs: Any) -> None:
         super().__init__(value)
 
-        self._extra: Dict[str, Any] = kwargs
+        self._extra: dict[str, Any] = kwargs
 
     def _anonymize(self, value: list) -> list:
         from .dispatcher import dispatch_value_mask

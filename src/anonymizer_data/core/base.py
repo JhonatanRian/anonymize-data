@@ -1,10 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Optional, TypeVar, Union
-
-T = TypeVar("T")
 
 
-class MaskBase(ABC, Generic[T]):
+class MaskBase[T](ABC):
     _allowed_type: type
 
     def __init__(self, value: T) -> None:
@@ -12,7 +9,7 @@ class MaskBase(ABC, Generic[T]):
             raise ValueError(f"Value {value} is not valid")
 
         self._value: T = value
-        self._value_anonymized: Optional[Union[str, list, dict]] = None
+        self._value_anonymized: str | list | dict | None = None
 
     def check_value(self, value: T) -> bool:
         return isinstance(value, self._allowed_type)

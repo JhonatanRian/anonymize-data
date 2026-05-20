@@ -1,4 +1,4 @@
-from .anonymizer_data import dispatch_value_mask
+from .dispatcher import dispatch_value_mask
 from .base import MaskBase
 from .dict import MaskDict
 from .list import MaskList

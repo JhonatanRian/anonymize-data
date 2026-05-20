@@ -10,6 +10,7 @@
 - **Added PEP 561 compliance (`py.typed`).**
 - **Updated `tests/` with the new expected fallback behavior and 100% pass rate.**
 - **Overhauled Documentation:** Rewrote `README.md`, `docs/index.md`, and `docs/tutorials.md` to be highly professional, objective, and concise. Included Tabs component for MkDocs and fixed all typos.
+- **Modernized Typing:** Upgraded all type hints in the project to native Python 3.10+ syntax (e.g., `list`, `dict`, `| None`) and adopted PEP 695 Type Parameter Syntax for generics.
 
 ## 2025-09-08: Refactoring and Project Structure Improvement
 
