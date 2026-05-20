@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from anonymizer_data.handlers.dispatch import MaskDispatch
 
@@ -45,7 +45,7 @@ class MaskStr(MaskBase[str]):
         type_mask: Optional[str] = None,
         anonymize_string: bool = True,
         string_masker: Optional[MaskDispatch] = None,
-        **kwargs: float,
+        **kwargs: Any,
     ) -> None:
         super().__init__(value)
 
@@ -53,12 +53,13 @@ class MaskStr(MaskBase[str]):
         self._string_masker: MaskDispatch = string_masker or MaskDispatch()
         self.__anonymize_string: bool = anonymize_string
 
-        if self._type_mask == self._type_mask_default:
-            size_anonymization = kwargs.get("size_anonymization", 0.7)
-            self._validate_size_anonymization(size_anonymization)
-            kwargs["size_anonymization"] = size_anonymization
+        self._extra: Dict[str, Any] = kwargs.copy()
 
-        self._extra: Dict[str, float] = kwargs
+        if "size_anonymization" in self._extra:
+            self._validate_size_anonymization(self._extra["size_anonymization"])
+        elif self._type_mask == self._type_mask_default:
+            self._extra["size_anonymization"] = 0.7
+            self._validate_size_anonymization(0.7)
 
     def _anonymize(self, value: str) -> str:
         if not self.__anonymize_string:

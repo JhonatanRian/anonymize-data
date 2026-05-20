@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from .base import MaskBase, T
 
@@ -40,16 +40,14 @@ class MaskList(MaskBase[List[T]]):
 
     _allowed_type = list
 
-    def __init__(self, value: List[T], **kwargs: Dict[str, float]) -> None:
-        from .dispatcher import dispatch_value_mask
-
+    def __init__(self, value: List[T], **kwargs: Any) -> None:
         super().__init__(value)
 
-        self._extra: Dict[str, float] = kwargs
-        self.dispatch_value_mask = dispatch_value_mask
+        self._extra: Dict[str, Any] = kwargs
 
     def _anonymize(self, value: list) -> list:
-        return [self.dispatch_value_mask(item, **self._extra) for item in value]
+        from .dispatcher import dispatch_value_mask
+        return [dispatch_value_mask(item, **self._extra) for item in value]
 
     @property
     def __list__(self) -> list:

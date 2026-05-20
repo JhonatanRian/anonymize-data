@@ -27,4 +27,7 @@ def dispatch_value_mask(value: Any, **extra: Any) -> Masker:
     if masker_factory:
         return masker_factory(value, **extra)
 
+    if extra.get("type_mask"):
+        return MaskStr(str(value), **extra).anonymize()
+
     return value

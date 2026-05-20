@@ -19,9 +19,10 @@ class MaskDict(MaskBase[DataDict]):
         value: DataDict,
         key_with_type_mask: bool = False,
         selected_keys: Optional[List[str]] = None,
-        **kwargs: Dict[str, float],
+        **kwargs: Any,
     ) -> None:
         super().__init__(value)
+        self._extra = kwargs
         self._strategy: DictAnonymizationStrategy = self._get_strategy(
             key_with_type_mask, selected_keys, **kwargs
         )
@@ -30,13 +31,20 @@ class MaskDict(MaskBase[DataDict]):
         self,
         key_with_type_mask: bool,
         selected_keys: Optional[List[str]],
-        **kwargs: Dict[str, float],
+        **kwargs: Any,
     ) -> DictAnonymizationStrategy:
+        from .dispatcher import dispatch_value_mask
         if key_with_type_mask:
-            return KeyAsTypeMaskDictAnonymizationStrategy(**kwargs)
+            return KeyAsTypeMaskDictAnonymizationStrategy(dispatch_value_mask, **kwargs)
         if selected_keys:
-            return KeyBasedDictAnonymizationStrategy(selected_keys, **kwargs)
-        return DefaultDictAnonymizationStrategy(**kwargs)
+            return KeyBasedDictAnonymizationStrategy(selected_keys, dispatch_value_mask, **kwargs)
+        return DefaultDictAnonymizationStrategy(dispatch_value_mask, **kwargs)
+
+    def with_keys(self, keys: List[str]) -> "MaskDict":
+        """Reconfigures the dictionary mask to use only the specified keys."""
+        from .dispatcher import dispatch_value_mask
+        self._strategy = KeyBasedDictAnonymizationStrategy(keys, dispatch_value_mask, **self._extra)
+        return self
 
     def _anonymize(self, value: DataDict) -> DataDict:
         return self._strategy.anonymize(value)
