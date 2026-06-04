@@ -1,3 +1,19 @@
+## 2026-06-04: CI/CD Pipeline Configuration and Modernization
+
+- **Configured Professional CI/CD Workflows:**
+  - Created `ci.yml` to automate code quality checks (Ruff formatting, Ruff linting, Pyright type checking) and unit tests execution with coverage on Python 3.12 and 3.13.
+  - Created `publish.yml` to automate publishing packages to PyPI via Trusted Publishing and deploying MkDocs documentation to GitHub Pages on tag releases.
+  - Created `release-please.yml` to automate release PR generation and version tag creation on merge to `main`.
+- **Created Standard GitHub Issue Templates:**
+  - Added structured Bug Report and Feature Request form templates.
+- **Modernized Dependency Management:**
+  - Migrated deprecated `[tool.uv.dev-dependencies]` to standard `[dependency-groups]` in `pyproject.toml`.
+  - Added `pyright` to development dependencies for local and remote type checking.
+- **Improved Code Quality and Types:**
+  - Fixed Pyright typing errors in `MaskBase` and `MaskDict` to ensure the codebase type checks cleanly.
+- **Updated Contributing Documentation:**
+  - Expanded `docs/contributing.md` into a professional, clear guide for local environment setup and quality checks.
+
 ## 2026-05-20: Security and Architecture Improvements
 
 - **Refactored `MaskDispatch` to use a Registry Pattern (`@MaskDispatch.register`).**
