@@ -47,6 +47,7 @@ class MaskList[T](MaskBase[list[T]]):
 
     def _anonymize(self, value: list) -> list:
         from .dispatcher import dispatch_value_mask
+
         return [dispatch_value_mask(item, **self._extra) for item in value]
 
     @property

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 
 class MaskBase[T](ABC):
@@ -9,7 +10,7 @@ class MaskBase[T](ABC):
             raise ValueError(f"Value {value} is not valid")
 
         self._value: T = value
-        self._value_anonymized: str | list | dict | None = None
+        self._value_anonymized: T | None = None
 
     def check_value(self, value: T) -> bool:
         return isinstance(value, self._allowed_type)
@@ -21,7 +22,7 @@ class MaskBase[T](ABC):
         """Returns and persists the anonymized value"""
         if self._value_anonymized is None:
             self._value_anonymized = self._anonymize(self._value)
-        return self._value_anonymized or self._anonymize(self._value)
+        return self._value_anonymized
 
     @abstractmethod
     def _anonymize(self, value: T) -> T:
@@ -31,7 +32,7 @@ class MaskBase[T](ABC):
         return str(self._value_anonymized or self._value)
 
     def __len__(self) -> int:
-        return len(self._value_anonymized or self._value)
+        return len(self._value_anonymized or self._value)  # type: ignore
 
-    def __iter__(self):
-        return iter(self._value_anonymized or self._value)
+    def __iter__(self) -> Any:
+        return iter(self._value_anonymized or self._value)  # type: ignore
