@@ -4,7 +4,6 @@ from anonymizer_data.handlers import MaskDispatch
 
 
 class TestMaskDispatch(unittest.TestCase):
-
     def setUp(self):
         self.dispatch = MaskDispatch()
 

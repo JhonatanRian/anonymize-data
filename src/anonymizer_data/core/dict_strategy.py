@@ -22,7 +22,12 @@ class DefaultDictAnonymizationStrategy(DictAnonymizationStrategy):
 
 
 class KeyBasedDictAnonymizationStrategy(DictAnonymizationStrategy):
-    def __init__(self, selected_keys: list[str], dispatcher_func: Callable[..., Any], **kwargs: Any) -> None:
+    def __init__(
+        self,
+        selected_keys: list[str],
+        dispatcher_func: Callable[..., Any],
+        **kwargs: Any,
+    ) -> None:
         super().__init__(dispatcher_func, **kwargs)
         self._selected_keys = selected_keys
 

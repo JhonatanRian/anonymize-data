@@ -4,7 +4,6 @@ from anonymizer_data.handlers.functions import mask_string_part
 
 
 class TestMaskStrPart(unittest.TestCase):
-
     def test_mask_part(self):
         result = mask_string_part("SensitiveData", 0, 8)
         self.assertEqual(result, "********eData")

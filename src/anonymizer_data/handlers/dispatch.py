@@ -1,5 +1,6 @@
 from typing import Any, Callable
 
+
 class MaskDispatch:
     """Class responsible for managing anonymization handlers."""
 
@@ -8,10 +9,12 @@ class MaskDispatch:
     @classmethod
     def register(cls, *type_masks: str) -> Callable:
         """Decorator to register a handler for specific mask types."""
+
         def decorator(handler: Callable) -> Callable:
             for type_mask in type_masks:
                 cls.add_handler(type_mask, handler)
             return handler
+
         return decorator
 
     @classmethod

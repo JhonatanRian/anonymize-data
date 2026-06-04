@@ -17,10 +17,10 @@ class TestAnonymizePIS(TestCase):
         self.assertEqual(anonymize_pis(self.pis_fake[0]), "********865")
 
     def test_anonymize_invalid_pis(self):
-        self.assertEqual(anonymize_pis("invalid-pis"), '***********')
+        self.assertEqual(anonymize_pis("invalid-pis"), "***********")
 
     def test_anonymize_short_pis(self):
-        self.assertEqual(anonymize_pis("123"), '***')
+        self.assertEqual(anonymize_pis("123"), "***")
 
     def test_anonymize_empty_string(self):
         self.assertEqual(anonymize_pis(""), "")

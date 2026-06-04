@@ -5,7 +5,6 @@ from anonymizer_data.handlers import MaskDispatch
 
 
 class TestMaskList(unittest.TestCase):
-
     def setUp(self):
         self.valid_list = ["SensitiveData1", "SensitiveData2"]
         self.valid_nested_list = [

@@ -4,7 +4,6 @@ from anonymizer_data.handlers.functions import anonymize_string
 
 
 class TestHandlerAnonymizeString(unittest.TestCase):
-
     def test_anonymize_complete(self):
         result = anonymize_string("SensitiveData", size_anonymization=1.0)
         self.assertEqual(result, "*************")

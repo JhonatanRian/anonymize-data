@@ -4,7 +4,6 @@ from anonymizer_data.handlers.functions import anonymize_phone_number
 
 
 class TestAnonymizePhoneNumber(TestCase):
-
     def test_anonymize_valid_phone_with_country_code(self):
         self.assertEqual(
             anonymize_phone_number("+55 (11) 91234-5678"), "+** (**) *****-*678"
@@ -17,10 +16,10 @@ class TestAnonymizePhoneNumber(TestCase):
         self.assertEqual(anonymize_phone_number("9876543210"), "*******210")
 
     def test_anonymize_short_phone(self):
-        self.assertEqual(anonymize_phone_number("12"), '**')
+        self.assertEqual(anonymize_phone_number("12"), "**")
 
     def test_anonymize_invalid_phone(self):
-        self.assertEqual(anonymize_phone_number("abc"), '***')
+        self.assertEqual(anonymize_phone_number("abc"), "***")
 
     def test_anonymize_empty_string(self):
         self.assertEqual(anonymize_phone_number(""), "")

@@ -4,7 +4,6 @@ from anonymizer_data.handlers.functions import anonymize_substring
 
 
 class TestAnonymizeSubstring(unittest.TestCase):
-
     def test_anonymize_substring(self):
         result = anonymize_substring("Hello world!", "world", occurrences=1)
         self.assertEqual(result, "Hello *****!")

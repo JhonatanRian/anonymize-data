@@ -6,7 +6,6 @@ from tests.payloads import COMPLEX_DICT
 
 
 class TestMaskDict(unittest.TestCase):
-
     def setUp(self):
         self.valid_dict = {"key1": "SensitiveData1", "key2": "SensitiveData2"}
         self.valid_nested_dict = {

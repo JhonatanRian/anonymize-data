@@ -75,17 +75,25 @@ def anonymize_email(email: str, **kwargs: Any) -> str:
     """
     if not isinstance(email, str) or "@" not in email:
         return _handle_invalid_doc(str(email), "Email", **kwargs)
-        
+
     username, domain = email.split("@", 1)
     if not username or not domain:
         return _handle_invalid_doc(str(email), "Email", **kwargs)
-        
+
     masked_username = anonymize_string(username, size_anonymization=0.9, **kwargs)
 
     return f"{masked_username}@{domain}"
 
 
-@MaskDispatch.register("phone", "smartphone", "cell_phone_number", "cell_phone", "celular", "telefone", "telefone_fixo")
+@MaskDispatch.register(
+    "phone",
+    "smartphone",
+    "cell_phone_number",
+    "cell_phone",
+    "celular",
+    "telefone",
+    "telefone_fixo",
+)
 def anonymize_phone_number(phone: str, **kwargs: Any) -> str:
     """
     Anonymize a phone number by masking parts of it while preserving its format.
@@ -111,7 +119,7 @@ def anonymize_phone_number(phone: str, **kwargs: Any) -> str:
     mask_char = kwargs.get("mask_char", Config.default_mask_char)
     last_three = phone_digits[-3:]
     anonymized = [mask_char] * (len(phone_digits) - 3)
-    
+
     replace_iter = iter(anonymized + last_three)
 
     def to_replace(match):
@@ -121,7 +129,9 @@ def anonymize_phone_number(phone: str, **kwargs: Any) -> str:
     return phone_anonymized
 
 
-def mask_string_part(string: str, start: int, end: int, occurrences: int = 1, **kwargs: Any) -> str:
+def mask_string_part(
+    string: str, start: int, end: int, occurrences: int = 1, **kwargs: Any
+) -> str:
     """
     Mask a specific part of a string with asterisks.
 
@@ -236,7 +246,9 @@ def anonymize_cnpj(cnpj: str, **kwargs: Any) -> str:
     mask_char = kwargs.get("mask_char", Config.default_mask_char)
     pattern = re.sub(r"[^0-9]", "", cnpj)
 
-    if "." in cnpj and "-" in cnpj and "/" in cnpj: # Original had a bug `"-" in cnpj and "-" in cnpj`. Let's fix that too.
+    if (
+        "." in cnpj and "-" in cnpj and "/" in cnpj
+    ):  # Original had a bug `"-" in cnpj and "-" in cnpj`. Let's fix that too.
         return f"{mask_char*2}.{mask_char*3}.{pattern[5:8]}/{mask_char*4}-{mask_char*2}"
     return mask_string_part(pattern, start=0, end=9, **kwargs)
 
@@ -257,7 +269,9 @@ def anonymize_rg(rg: str, **kwargs: Any) -> str:
     Returns:
         str: The masked version of the RG number.
     """
-    if not isinstance(rg, str) or not re.match(r"^(?:\d{9}|\d{2}\.\d{3}\.\d{3}-\d)$", rg):
+    if not isinstance(rg, str) or not re.match(
+        r"^(?:\d{9}|\d{2}\.\d{3}\.\d{3}-\d)$", rg
+    ):
         return _handle_invalid_doc(str(rg), "RG", **kwargs)
 
     mask_char = kwargs.get("mask_char", Config.default_mask_char)
@@ -325,10 +339,30 @@ def anonymize_pis(pis: str, **kwargs: Any) -> str:
 
 
 @MaskDispatch.register(
-    "username", "first_name", "name", "nome", "endereco", "endereço", "address", 
-    "bairro", "neighborhood", "district", "suburb", "quarter", "sexo", "sex", 
-    "gender", "raça", "raca", "race", "cor", "color", "senha", "password", 
-    "tipo_sanguineo", "blood_type"
+    "username",
+    "first_name",
+    "name",
+    "nome",
+    "endereco",
+    "endereço",
+    "address",
+    "bairro",
+    "neighborhood",
+    "district",
+    "suburb",
+    "quarter",
+    "sexo",
+    "sex",
+    "gender",
+    "raça",
+    "raca",
+    "race",
+    "cor",
+    "color",
+    "senha",
+    "password",
+    "tipo_sanguineo",
+    "blood_type",
 )
 def anonymize_all_string(string: str, **kwargs: Any) -> str:
     """Anonymize all characters of a string."""

@@ -5,7 +5,6 @@ from tests.conftest import fake
 
 
 class TestMaskStr(unittest.TestCase):
-
     def setUp(self):
         self.valid_string = "SensitiveData"
         self.mask_dispatch = MaskDispatch()
@@ -57,7 +56,6 @@ class TestMaskStr(unittest.TestCase):
         self.assertEqual(result, "*********Data")
 
     def test_enter_type_mask_cpf_valid(self):
-
         cpf = fake.cpf()
         cpf_clean = cpf.replace(".", "").replace("-", "")
 
@@ -80,4 +78,3 @@ class TestMaskStr(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

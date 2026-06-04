@@ -4,7 +4,6 @@ from anonymizer_data.handlers.functions import anonymize_numeric_digits
 
 
 class TestAnonymizeNumericDigits(unittest.TestCase):
-
     def test_anonymize_digits(self):
         result = anonymize_numeric_digits("My phone number is 1234567890")
         self.assertEqual(result, "My phone number is **********")
