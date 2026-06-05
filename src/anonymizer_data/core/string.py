@@ -16,9 +16,6 @@ class MaskStr(MaskBase[str]):
         size_anonymization (Optional[float]): The size of the anonymized string.
         string_masker (Optional[MaskDispatch]): Dispatcher of the string to anonymize.
 
-    Returns:
-        MaskStr: A object MaskStr.
-
     Examples:
         >>> string = MaskStr("Hello world")
         >>> print(string)

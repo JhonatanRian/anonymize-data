@@ -18,9 +18,6 @@ class MaskList[T](MaskBase[list[T]]):
         the other parameters, keeping this in mind be aware that if you pass an invalid value a ValueError may occur
         when calling the "anonymize" method.
 
-    Returns:
-        MaskList: A object MaskList.
-
     Examples:
         >>> from anonymizer_data.core import MaskList
         >>> mask_list = MaskList(["Hello world", "Hello Python"])
