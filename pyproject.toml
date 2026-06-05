@@ -1,6 +1,6 @@
 [project]
 name = "anonymizer-data"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
     { name="Jhonatan Rian", email="jhonatanrian@zohomail.com" },
 ]
